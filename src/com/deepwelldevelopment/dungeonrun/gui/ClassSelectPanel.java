@@ -1,5 +1,8 @@
 package com.deepwelldevelopment.dungeonrun.gui;
 
+import com.deepwelldevelopment.dungeonrun.engine.characters.Character;
+import com.deepwelldevelopment.dungeonrun.engine.run.Run;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
@@ -66,7 +69,12 @@ public class ClassSelectPanel extends JPanel implements KeyListener, Runnable {
                     selectedClass++;
                 }
             } else if (keyCode == KeyEvent.VK_ENTER) {
-
+                isActive = false;
+                frame.gp.isActive = true;
+                frame.removeKeyListener(this);
+                frame.addKeyListener(frame.gp);
+                frame.setContentPane(frame.gp);
+                frame.gp.startRun(new Run(Character.characters[selectedClass]));
             } else if (keyCode == KeyEvent.VK_ESCAPE) {
                 isActive = false;
                 frame.mmp.isActive = true;

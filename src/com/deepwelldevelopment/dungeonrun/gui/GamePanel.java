@@ -1,5 +1,8 @@
 package com.deepwelldevelopment.dungeonrun.gui;
 
+import com.deepwelldevelopment.dungeonrun.engine.characters.Character;
+import com.deepwelldevelopment.dungeonrun.engine.run.Run;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
@@ -7,12 +10,23 @@ import java.awt.event.KeyListener;
 
 public class GamePanel extends JPanel implements KeyListener, Runnable{
 
+    public boolean isActive;
+
     boolean paused;
 
     GameFrame frame;
+    Run run;
 
     public GamePanel(GameFrame frame) {
         this.frame = frame;
+        run = null;
+    }
+
+    public void startRun(Run run) {
+        this.run = run;
+        Character c = this.run.character;
+        System.out.print(c.id + c.name + c.hp + c.damage + c.fireDelay + c.fireRate + c.accuracy + c.speed + c.range + c
+                .luck);
     }
 
     @Override

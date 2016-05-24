@@ -4,7 +4,7 @@ import com.deepwelldevelopment.dungeonrun.engine.characters.Character;
 
 public class Run {
 
-    Character character;
+    public Character character;
 
     int hp;
     float damage;
