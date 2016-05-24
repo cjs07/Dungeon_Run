@@ -9,7 +9,10 @@ public class GamePanel extends JPanel implements KeyListener, Runnable{
 
     boolean paused;
 
-    public GamePanel() {
+    GameFrame frame;
+
+    public GamePanel(GameFrame frame) {
+        this.frame = frame;
     }
 
     @Override
