@@ -2,6 +2,8 @@ package com.deepwelldevelopment.dungeonrun.engine.run;
 
 import com.deepwelldevelopment.dungeonrun.engine.characters.Character;
 
+import java.util.Random;
+
 public class Run {
 
     public Character character;
@@ -15,6 +17,8 @@ public class Run {
     float range;
     float luck;
 
+    Generator generator;
+
 
     public Run(Character character) {
         this.character = character;
@@ -26,6 +30,8 @@ public class Run {
         speed = character.speed;
         range = character.range;
         luck = character.luck;
+
+        generator = new Generator(new Random());
     }
 
     public Run(int hp, float damage, int fireDelay, float fireRate, float accuracy, float speed, float range, float luck) {
