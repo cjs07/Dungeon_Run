@@ -1,28 +1,49 @@
 package com.deepwelldevelopment.dungeonrun.engine.run;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.Random;
+import java.util.Scanner;
 
 public class Generator {
 
 
-     int[][] layout;
-     int minRooms = 6;
-     int maxRooms = 50;
-     int maxSubbranches;
-     int maxBranchesPerRoom = 4;
-     int maxRoomsPerBranch = 8;
-
-     int subbranches;
-     int totalRooms;
-     int totalBranches;
-    
     Random rng;
+    private int[][] layout;
+    private int minRooms;
+    private int maxRooms;
+    private int maxSubbranches;
+    private int maxBranchesPerRoom;
+    private int maxRoomsPerBranch;
+    private int subbranches;
+    private int totalRooms;
+    private int totalBranches;
 
     public Generator(Random rng) {
         this.rng = rng;
     }
 
-    public void generateFloor() {
+    public void generateRun(Run run) {
+        for (int i = 1; i <= run.floorTo; i++) {
+            generateFloor(new File("res/generation/floor" + i + ".drg"));
+        }
+    }
+
+    public void generateFloor(File restrictions) {
+        Scanner scanner;
+        try {
+            scanner = new Scanner(restrictions);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            scanner = new Scanner("res/generation/defaults.drg");
+        }
+
+        minRooms = scanner.nextInt();
+        maxRooms = scanner.nextInt();
+        maxSubbranches = scanner.nextInt();
+        maxBranchesPerRoom = scanner.nextInt();
+        maxRoomsPerBranch = scanner.nextInt();
+
         layout = new int[15][15];
         for (int x = 0; x < layout.length; x++) {
             for (int y = 0; y < layout.length; y++) {
@@ -144,29 +165,32 @@ public class Generator {
     }
 
      void validate() {
-        if (totalRooms < minRooms) {
-            layout[(int) Math.floor(layout.length / 2)][(int) Math.floor(layout[0].length / 2)] = 2;
+         if (totalRooms < minRooms) {
+             totalRooms = 0;
+             totalBranches = 0;
+             subbranches = 0;
+             layout[(int) Math.floor(layout.length / 2)][(int) Math.floor(layout[0].length / 2)] = 2;
 
-            int mainBranches = rng.nextInt(4) + 1;
-            int branch1 = rng.nextInt(4);
-            int branch2 = rng.nextInt(4);
-            int branch3 = rng.nextInt(4);
-            int branch4 = rng.nextInt(4);
+             int mainBranches = rng.nextInt(4) + 1;
+             int branch1 = rng.nextInt(4);
+             int branch2 = rng.nextInt(4);
+             int branch3 = rng.nextInt(4);
+             int branch4 = rng.nextInt(4);
 
-            totalBranches += mainBranches;
-            totalRooms += 1;
-            for (int i = 0; i < mainBranches; i++) {
-                if (i == 0) {
-                    generateBranch((int) Math.ceil(layout.length / 2), (int) Math.ceil(layout[0].length / 2), branch1, false);
-                } else if (i == 1) {
-                    generateBranch((int) Math.ceil(layout.length / 2), (int) Math.ceil(layout[0].length / 2), branch2, false);
-                } else if (i == 2) {
-                    generateBranch((int) Math.ceil(layout.length / 2), (int) Math.ceil(layout[0].length / 2), branch3, false);
-                } else if (i == 3) {
-                    generateBranch((int) Math.ceil(layout.length / 2), (int) Math.ceil(layout[0].length / 2), branch4, false);
-                }
-            }
-            validate();
-        }
+             totalBranches += mainBranches;
+             totalRooms += 1;
+             for (int i = 0; i < mainBranches; i++) {
+                 if (i == 0) {
+                     generateBranch((int) Math.ceil(layout.length / 2), (int) Math.ceil(layout[0].length / 2), branch1, false);
+                 } else if (i == 1) {
+                     generateBranch((int) Math.ceil(layout.length / 2), (int) Math.ceil(layout[0].length / 2), branch2, false);
+                 } else if (i == 2) {
+                     generateBranch((int) Math.ceil(layout.length / 2), (int) Math.ceil(layout[0].length / 2), branch3, false);
+                 } else if (i == 3) {
+                     generateBranch((int) Math.ceil(layout.length / 2), (int) Math.ceil(layout[0].length / 2), branch4, false);
+                 }
+             }
+             validate();
+         }
     }
 }

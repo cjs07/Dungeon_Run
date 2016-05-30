@@ -30,7 +30,7 @@ public class PrefabLoader {
         }
         for (int y = 0; y < entityGrid[0].length; y++) {
             for (int x = 0; x < entityGrid.length; x++) {
-                entityGrid[x][y] = gridScanner.nextInt();
+                entityGrid[x][y] = entityScanner.nextInt();
             }
         }
         return new Prefab(image, grid, entityGrid);

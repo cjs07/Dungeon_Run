@@ -19,6 +19,8 @@ public class Run {
 
     Generator generator;
 
+    int floorTo = 1;
+
 
     public Run(Character character) {
         this.character = character;
@@ -43,5 +45,9 @@ public class Run {
         this.speed = speed;
         this.range = range;
         this.luck = luck;
+    }
+
+    public void generate() {
+        generator.generateRun();
     }
 }
