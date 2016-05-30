@@ -48,6 +48,6 @@ public class Run {
     }
 
     public void generate() {
-        generator.generateRun();
+        generator.generateRun(this);
     }
 }
