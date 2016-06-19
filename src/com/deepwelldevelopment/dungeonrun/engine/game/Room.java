@@ -30,6 +30,10 @@ public class Room {
         }
     }
 
+    public void draw(Graphics g) {
+
+    }
+
     public void update() {
 
     }

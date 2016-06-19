@@ -4,6 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class PrefabLoader {
@@ -34,5 +35,25 @@ public class PrefabLoader {
             }
         }
         return new Prefab(image, grid, entityGrid);
+    }
+
+    public ArrayList<Prefab> loadPrefabsForFloor(int floor) {
+        ArrayList<Prefab> prefabs = new ArrayList<>();
+        Scanner scanner = null;
+        try {
+            scanner = new Scanner(new File("res/prefabs/floor" + floor + "prefabs.drg"));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        if (scanner != null) {
+            while (scanner.hasNext()) {
+                try {
+                    prefabs.add(loadPrefab(scanner.next()));
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return prefabs;
     }
 }

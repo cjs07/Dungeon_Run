@@ -1,5 +1,7 @@
 package com.deepwelldevelopment.dungeonrun.engine.run;
 
+import com.deepwelldevelopment.dungeonrun.engine.game.Floor;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Random;
@@ -21,15 +23,23 @@ public class Generator {
 
     public Generator(Random rng) {
         this.rng = rng;
+        layout = new int[15][15];
     }
 
-    public void generateRun(Run run) {
+    public Floor[] generateRun(Run run) {
+        Floor[] floors = new Floor[run.floorTo];
         for (int i = 1; i <= run.floorTo; i++) {
-            generateFloor(new File("res/generation/floor" + i + ".drg"));
+            floors[i] = new Floor(generateFloor(new File("res/generation/floor" + i + ".drg")));
         }
+        return floors;
     }
 
-    public void generateFloor(File restrictions) {
+    private int[][] generateFloor(File restrictions) {
+        for (int x = 0; x < layout.length; x++) {
+            for (int y = 0; y < layout[0].length; y++) {
+                layout[x][y] = 0;
+            }
+        }
         Scanner scanner;
         try {
             scanner = new Scanner(restrictions);
@@ -44,7 +54,6 @@ public class Generator {
         maxBranchesPerRoom = scanner.nextInt();
         maxRoomsPerBranch = scanner.nextInt();
 
-        layout = new int[15][15];
         for (int x = 0; x < layout.length; x++) {
             for (int y = 0; y < layout.length; y++) {
                 layout[x][y] = 0;
@@ -82,9 +91,10 @@ public class Generator {
             }
             System.out.print("\n");
         }
+        return layout;
     }
 
-     void generateBranch (int x, int y, int side, boolean canZero) {
+    private void generateBranch(int x, int y, int side, boolean canZero) {
         int currentX, currentY, xOffset, yOffset;
         switch (side) {
             case 0:
@@ -164,7 +174,7 @@ public class Generator {
         }
     }
 
-     void validate() {
+    private void validate() {
          if (totalRooms < minRooms) {
              totalRooms = 0;
              totalBranches = 0;
@@ -192,5 +202,9 @@ public class Generator {
              }
              validate();
          }
+    }
+
+    public long generateRandomSeed() {
+        return rng.nextLong();
     }
 }
