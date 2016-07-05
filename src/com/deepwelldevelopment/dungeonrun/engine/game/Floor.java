@@ -1,6 +1,8 @@
 package com.deepwelldevelopment.dungeonrun.engine.game;
 
 import com.deepwelldevelopment.dungeonrun.engine.prefab.Prefab;
+import com.deepwelldevelopment.dungeonrun.engine.run.Run;
+import com.deepwelldevelopment.dungeonrun.gui.GamePanel;
 
 public class Floor {
 
@@ -23,6 +25,8 @@ public class Floor {
                 }
             }
         }
+        Run.instance.getPlayer().setX(GamePanel.width/2);
+        Run.instance.getPlayer().setY(GamePanel.height/2);
     }
 
     public Room getCurrentRoom() {

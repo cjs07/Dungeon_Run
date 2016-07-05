@@ -1,7 +1,10 @@
 package com.deepwelldevelopment.dungeonrun.engine.game;
 
 import com.deepwelldevelopment.dungeonrun.engine.game.entity.Entity;
+import com.deepwelldevelopment.dungeonrun.engine.game.entity.damagable.movable.EntityPlayer;
+import com.deepwelldevelopment.dungeonrun.engine.run.Run;
 
+import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 
@@ -11,7 +14,7 @@ public class Room {
     int[][] grid;
     int[][] entityGrid;
     ArrayList<Entity> entities;
-    //TODO: EntityPlayer player
+    EntityPlayer player;
 
 
     public Room(Image display, int[][] grid, int[][] entityGrid) {
@@ -19,6 +22,7 @@ public class Room {
         this.grid = grid;
         this.entityGrid = entityGrid;
         entities = new ArrayList<>();
+        player = Run.instance.getPlayer();
 
         for (int x = 0; x < entityGrid.length; x++) {
             for (int y = 0; y < entityGrid[0].length; y++) {
@@ -30,8 +34,17 @@ public class Room {
         }
     }
 
-    public void draw(Graphics g) {
-        g.drawImage(display, 0, 0, null);
+    public void draw(JPanel source, Graphics g) {
+        int blankSpaceX = source.getWidth() - display.getWidth(null);
+        int blankSpaceY = source.getHeight() - display.getHeight(null);
+        int offsetX = blankSpaceX/2;
+        int offsetY = blankSpaceY/2;
+        g.drawImage(display, offsetX, offsetY, null);
+
+        g.drawImage(player.getImage(), player.getX(), player.getY(), null);
+
+        //TODO: DRAW OBSTACLE LAYER
+        //TODO: DRAW ENTITIES
     }
 
     public ArrayList<Entity> getEntities() {
@@ -39,6 +52,7 @@ public class Room {
     }
 
     public void update() {
+        player = Run.instance.getPlayer();
         entities.forEach(Entity::update);
     }
 

@@ -10,6 +10,9 @@ import java.awt.event.KeyListener;
 
 public class GamePanel extends JPanel implements KeyListener, Runnable{
 
+    public static int width;
+    public static int height;
+
     public boolean isActive;
 
     boolean paused;
@@ -31,6 +34,8 @@ public class GamePanel extends JPanel implements KeyListener, Runnable{
         run.generate();
         paused = false;
         gameThread.start();
+        width = getWidth();
+        height = getHeight();
     }
 
     @Override
@@ -39,10 +44,10 @@ public class GamePanel extends JPanel implements KeyListener, Runnable{
 
         g.clearRect(0, 0, getWidth(), getHeight());
 
-        g.setColor(Color.BLACK);
+        g.setColor(Color.WHITE);
         g.fillRect(0, 0, getWidth(), getHeight());
 
-        run.getCurrentFloor().getCurrentRoom().draw(g);
+        run.getCurrentFloor().getCurrentRoom().draw(this, g);
     }
 
     @Override
@@ -54,12 +59,16 @@ public class GamePanel extends JPanel implements KeyListener, Runnable{
     public void keyPressed(KeyEvent e) {
         switch (e.getKeyCode()) {
             case KeyEvent.VK_W:
+                Run.instance.getPlayer().setDx(0).setDy(1);
                 break;
             case KeyEvent.VK_A:
+                Run.instance.getPlayer().setDx(-1).setDy(0);
                 break;
             case KeyEvent.VK_S:
+                Run.instance.getPlayer().setDx(0).setDy(1);
                 break;
             case KeyEvent.VK_D:
+                Run.instance.getPlayer().setDx(1).setDy(0);
                 break;
             case KeyEvent.VK_UP:
                 break;
@@ -74,17 +83,22 @@ public class GamePanel extends JPanel implements KeyListener, Runnable{
             default:
                 break;
         }
+        System.out.println("key pressed: " + e.getKeyChar());
     }
 
     @Override
     public void keyReleased(KeyEvent e) {
-
+        int keyCode = e.getKeyCode();
+        if (keyCode == KeyEvent.VK_W || keyCode == KeyEvent.VK_A || keyCode == KeyEvent.VK_S || keyCode == KeyEvent.VK_D) {
+            run.getPlayer().setDx(0).setDy(0);
+        }
     }
 
     @Override
     public void run() {
         while (true) {
             if (!paused) {
+                run.getCurrentFloor().getCurrentRoom().update();
                 repaint();
                 revalidate();
                 try {

@@ -2,8 +2,11 @@ package com.deepwelldevelopment.dungeonrun.engine.run;
 
 import com.deepwelldevelopment.dungeonrun.engine.characters.Character;
 import com.deepwelldevelopment.dungeonrun.engine.game.Floor;
+import com.deepwelldevelopment.dungeonrun.engine.game.entity.damagable.movable.EntityPlayer;
+import com.deepwelldevelopment.dungeonrun.engine.physics.Hitbox;
 import com.deepwelldevelopment.dungeonrun.engine.prefab.Prefab;
 import com.deepwelldevelopment.dungeonrun.engine.prefab.PrefabLoader;
+import com.deepwelldevelopment.dungeonrun.gui.GamePanel;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -27,6 +30,8 @@ public class Run {
     ArrayList<Prefab> prefabsForFloor;
     int floorTo = 1;
 
+    EntityPlayer player;
+
     Floor[] floors;
     int floorIndex;
 
@@ -47,6 +52,8 @@ public class Run {
         prefabsForFloor = prefabLoader.loadPrefabsForFloor(1);
 
         instance = this;
+
+        player = new EntityPlayer(0, hp, new Hitbox(), GamePanel.width/2, GamePanel.height/2);
     }
 
     public Run(int hp, float damage, int fireDelay, float fireRate, float accuracy, float speed, float range, float luck) {
@@ -70,6 +77,14 @@ public class Run {
 
     public Floor getCurrentFloor() {
         return floors[floorIndex];
+    }
+
+    public EntityPlayer getPlayer() {
+        return player;
+    }
+
+    public void updatePlayer(EntityPlayer player) {
+        this.player = player;
     }
 
     public void generate() {

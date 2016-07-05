@@ -15,6 +15,10 @@ public class Entity {
         gameEntities.add(id, this);
     }
 
+    public static void initializeEntityLibrary() {
+        gameEntities = new ArrayList<>();
+    }
+
     public void update() {
     }
 }

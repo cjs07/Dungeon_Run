@@ -21,4 +21,32 @@ public class EntityMovable extends EntityDamagable {
         x += dx;
         y += dy;
     }
+
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
+    public EntityMovable setX(int x) {
+        this.x = x;
+        return this;
+    }
+
+    public EntityMovable setY(int y) {
+        this.y = y;
+        return this;
+    }
+
+    public EntityMovable setDx(int dx) {
+        this.dx = dx;
+        return this;
+    }
+
+    public EntityMovable setDy(int dy) {
+        this.dy = dy;
+        return this;
+    }
 }
