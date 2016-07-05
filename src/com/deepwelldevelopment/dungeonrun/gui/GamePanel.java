@@ -22,9 +22,14 @@ public class GamePanel extends JPanel implements KeyListener, Runnable{
     GameFrame frame;
     Run run;
 
+    Image fullHeart;
+    Image halfHeart;
+
     public GamePanel(GameFrame frame) {
         this.frame = frame;
         run = null;
+        fullHeart = new ImageIcon("res/fullheart.png").getImage();
+        halfHeart = new ImageIcon("res/halfheart.png").getImage();
     }
 
     public void startRun(Run run) {
@@ -47,6 +52,17 @@ public class GamePanel extends JPanel implements KeyListener, Runnable{
         g.setColor(Color.WHITE);
         g.fillRect(0, 0, getWidth(), getHeight());
 
+        if (run.getHp() % 2 == 0) {
+            for (int i = 0; i < run.getHp(); i+=2) {
+                g.drawImage(fullHeart, i*fullHeart.getWidth(null), 20, null);
+            }
+        } else {
+            for (int i = 0; i < run.getHp()-1; i+=2) {
+                g.drawImage(fullHeart, i*fullHeart.getWidth(null), 20, null);
+            }
+            g.drawImage(halfHeart, (((run.getHp()-1)/2)*fullHeart.getWidth(null)) + (2*fullHeart.getWidth(null)), 20, null);
+        }
+
         run.getCurrentFloor().getCurrentRoom().draw(this, g);
     }
 
@@ -59,7 +75,7 @@ public class GamePanel extends JPanel implements KeyListener, Runnable{
     public void keyPressed(KeyEvent e) {
         switch (e.getKeyCode()) {
             case KeyEvent.VK_W:
-                Run.instance.getPlayer().setDx(0).setDy(1);
+                Run.instance.getPlayer().setDx(0).setDy(-1);
                 break;
             case KeyEvent.VK_A:
                 Run.instance.getPlayer().setDx(-1).setDy(0);
@@ -101,8 +117,9 @@ public class GamePanel extends JPanel implements KeyListener, Runnable{
                 run.getCurrentFloor().getCurrentRoom().update();
                 repaint();
                 revalidate();
+                System.out.println("frame completed: " + System.currentTimeMillis());
                 try {
-                    Thread.sleep(16);
+                    Thread.sleep(1000/60);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }

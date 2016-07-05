@@ -54,6 +54,7 @@ public class Room {
     public void update() {
         player = Run.instance.getPlayer();
         entities.forEach(Entity::update);
+        player.update();
     }
 
     public void playerEnter() {

@@ -83,6 +83,38 @@ public class Run {
         return player;
     }
 
+    public int getHp() {
+        return hp;
+    }
+
+    public float getDamage() {
+        return damage;
+    }
+
+    public int getFireDelay() {
+        return fireDelay;
+    }
+
+    public float getFireRate() {
+        return fireRate;
+    }
+
+    public float getAccuracy() {
+        return accuracy;
+    }
+
+    public float getSpeed() {
+        return speed;
+    }
+
+    public float getRange() {
+        return range;
+    }
+
+    public float getLuck() {
+        return luck;
+    }
+
     public void updatePlayer(EntityPlayer player) {
         this.player = player;
     }
