@@ -34,8 +34,12 @@ public class Room {
 
     }
 
-    public void update() {
+    public ArrayList<Entity> getEntities() {
+        return entities;
+    }
 
+    public void update() {
+        entities.forEach(Entity::update);
     }
 
     public void playerEnter() {
