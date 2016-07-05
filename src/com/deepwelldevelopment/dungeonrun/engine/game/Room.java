@@ -31,7 +31,7 @@ public class Room {
     }
 
     public void draw(Graphics g) {
-
+        g.drawImage(display, 0, 0, null);
     }
 
     public ArrayList<Entity> getEntities() {

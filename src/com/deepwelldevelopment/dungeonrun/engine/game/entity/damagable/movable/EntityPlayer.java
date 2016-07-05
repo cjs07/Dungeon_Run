@@ -7,4 +7,9 @@ public class EntityPlayer extends EntityMovable {
     public EntityPlayer(int id, double hp, Hitbox hitbox, int x, int y) {
         super(id, hp, hitbox, x, y);
     }
+
+    @Override
+    public void damage(double amount) {
+
+    }
 }

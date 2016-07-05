@@ -27,11 +27,19 @@ public class GamePanel extends JPanel implements KeyListener, Runnable{
         Character c = this.run.character;
         System.out.print(c.id + c.name + c.hp + c.damage + c.fireDelay + c.fireRate + c.accuracy + c.speed + c.range + c.luck);
         run.generate();
+        paused = false;
     }
 
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
+
+        g.clearRect(0, 0, getWidth(), getHeight());
+
+        g.setColor(Color.BLACK);
+        g.fillRect(0, 0, getWidth(), getHeight());
+
+        run.getCurrentFloor().getCurrentRoom().draw(g);
     }
 
     @Override

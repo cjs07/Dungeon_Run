@@ -1,6 +1,7 @@
 package com.deepwelldevelopment.dungeonrun.engine.run;
 
 import com.deepwelldevelopment.dungeonrun.engine.characters.Character;
+import com.deepwelldevelopment.dungeonrun.engine.game.Floor;
 import com.deepwelldevelopment.dungeonrun.engine.prefab.Prefab;
 import com.deepwelldevelopment.dungeonrun.engine.prefab.PrefabLoader;
 
@@ -25,6 +26,9 @@ public class Run {
     PrefabLoader prefabLoader;
     ArrayList<Prefab> prefabsForFloor;
     int floorTo = 1;
+
+    Floor[] floors;
+    int floorIndex;
 
     public Run(Character character) {
         this.character = character;
@@ -64,7 +68,12 @@ public class Run {
         return prefabsForFloor;
     }
 
+    public Floor getCurrentFloor() {
+        return floors[floorIndex];
+    }
+
     public void generate() {
-        generator.generateRun(this);
+        floors = generator.generateRun(this);
+        floorIndex = 0;
     }
 }

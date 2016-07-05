@@ -1,9 +1,11 @@
 package com.deepwelldevelopment.dungeonrun.engine.run;
 
 import com.deepwelldevelopment.dungeonrun.engine.game.Floor;
+import com.deepwelldevelopment.dungeonrun.engine.prefab.Prefab;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -12,6 +14,7 @@ public class Generator {
 
     Random rng;
     private int[][] layout;
+    private Prefab[][] prefabLayout;
     private int minRooms;
     private int maxRooms;
     private int maxSubbranches;
@@ -24,12 +27,15 @@ public class Generator {
     public Generator(Random rng) {
         this.rng = rng;
         layout = new int[15][15];
+        prefabLayout = new Prefab[15][15];
     }
 
     public Floor[] generateRun(Run run) {
         Floor[] floors = new Floor[run.floorTo];
-        for (int i = 1; i <= run.floorTo; i++) {
-            floors[i] = new Floor(generateFloor(new File("res/generation/floor" + i + ".drg")));
+        for (int i = 0; i < run.floorTo; i++) {
+            int[][] layout = generateFloor(new File("res/generation/floor" + i + ".drg"));
+            prefabLayout = generatePrebabLayout(layout);
+            floors[i] = new Floor(layout, prefabLayout);
         }
         return floors;
     }
@@ -92,6 +98,19 @@ public class Generator {
             System.out.print("\n");
         }
         return layout;
+    }
+
+    private Prefab[][] generatePrebabLayout(int[][] layout) {
+        ArrayList<Prefab> availablePrefabs = Run.instance.getPrefabsForFloor();
+        for (int x = 0; x < prefabLayout.length; x++) {
+            for (int y = 0; y < prefabLayout[0].length; y++) {
+                if (layout[x][y] == 1 || layout[x][y] == 2) {
+                    int selctionIndex = rng.nextInt(availablePrefabs.size());
+                    prefabLayout[x][y] = availablePrefabs.get(selctionIndex);
+                }
+            }
+        }
+        return prefabLayout;
     }
 
     private void generateBranch(int x, int y, int side, boolean canZero) {
