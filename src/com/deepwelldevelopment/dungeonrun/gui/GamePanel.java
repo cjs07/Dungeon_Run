@@ -14,6 +14,8 @@ public class GamePanel extends JPanel implements KeyListener, Runnable{
 
     boolean paused;
 
+    Thread gameThread = new Thread(this);
+
     GameFrame frame;
     Run run;
 
@@ -28,6 +30,7 @@ public class GamePanel extends JPanel implements KeyListener, Runnable{
         System.out.print(c.id + c.name + c.hp + c.damage + c.fireDelay + c.fireRate + c.accuracy + c.speed + c.range + c.luck);
         run.generate();
         paused = false;
+        gameThread.start();
     }
 
     @Override
