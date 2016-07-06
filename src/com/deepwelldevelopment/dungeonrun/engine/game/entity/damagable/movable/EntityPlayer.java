@@ -27,16 +27,17 @@ public class EntityPlayer extends EntityMovable {
     }
 
     public EntityProjectile fireShot(int direction) {
-        System.out.println("shot fired");
+        int x = Run.instance.getPlayer().getX();
+        int y = Run.instance.getPlayer().getY();
         switch (direction) {
             case 0:
-                return new EntityProjectile(Run.instance.getPlayer(), new Hitbox(), Run.instance.getPlayer().getX(), Run.instance.getPlayer().getY()).setDx(-1).setDy(0);
+                return new EntityProjectile(Run.instance.getPlayer(), new Hitbox(x, y, 16, 16), x, y).setDx(-1).setDy(0);
             case 1:
-                return new EntityProjectile(Run.instance.getPlayer(), new Hitbox(), Run.instance.getPlayer().getX(), Run.instance.getPlayer().getY()).setDx(0).setDy(-1);
+                return new EntityProjectile(Run.instance.getPlayer(), new Hitbox(x, y, 16, 16), x, y).setDx(0).setDy(-1);
             case 2:
-                return new EntityProjectile(Run.instance.getPlayer(), new Hitbox(), Run.instance.getPlayer().getX(), Run.instance.getPlayer().getY()).setDx(1).setDy(0);
+                return new EntityProjectile(Run.instance.getPlayer(), new Hitbox(x, y, 16, 16), x, y).setDx(1).setDy(0);
             case 3:
-                return new EntityProjectile(Run.instance.getPlayer(), new Hitbox(), Run.instance.getPlayer().getX(), Run.instance.getPlayer().getY()).setDx(0).setDy(1);
+                return new EntityProjectile(Run.instance.getPlayer(), new Hitbox(x, y, 16, 16), x, y).setDx(0).setDy(1);
             default:
                 break;
         }

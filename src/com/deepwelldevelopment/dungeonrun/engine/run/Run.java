@@ -53,7 +53,9 @@ public class Run {
 
         instance = this;
 
-        player = new EntityPlayer(0, hp, new Hitbox(), GamePanel.width/2, GamePanel.height/2);
+        int x = GamePanel.width/2;
+        int y = GamePanel.height/2;
+        player = new EntityPlayer(0, hp, new Hitbox(x, y, 64, 64), x, y);
     }
 
     public Run(int hp, float damage, int fireDelay, float fireRate, float accuracy, float speed, float range, float luck) {

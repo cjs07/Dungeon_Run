@@ -70,9 +70,6 @@ public class GamePanel extends JPanel implements KeyListener, Runnable{
         }
 
         run.getCurrentFloor().getCurrentRoom().draw(this, g);
-
-        g.setColor(Color.BLUE);
-        g.drawRect(run.getPlayer().getX(), run.getPlayer().getY(), 50, 50);
     }
 
     @Override
@@ -148,7 +145,7 @@ public class GamePanel extends JPanel implements KeyListener, Runnable{
                 run.getCurrentFloor().getCurrentRoom().update();
                 Run.instance = run;
                 framesSinceShot++;
-                if (framesSinceShot >= 5*run.getFireDelay()) {
+                if (framesSinceShot >= 2*run.getFireDelay()) {
                     canFire = true;
                 } else {
                     canFire = false;

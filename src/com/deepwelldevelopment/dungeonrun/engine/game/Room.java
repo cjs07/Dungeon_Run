@@ -1,6 +1,7 @@
 package com.deepwelldevelopment.dungeonrun.engine.game;
 
 import com.deepwelldevelopment.dungeonrun.engine.game.entity.Entity;
+import com.deepwelldevelopment.dungeonrun.engine.game.entity.damagable.EntityDamagable;
 import com.deepwelldevelopment.dungeonrun.engine.game.entity.damagable.movable.EntityPlayer;
 import com.deepwelldevelopment.dungeonrun.engine.game.entity.projectile.EntityProjectile;
 import com.deepwelldevelopment.dungeonrun.engine.run.Run;
@@ -52,8 +53,19 @@ public class Room {
                 if (ep.getSource() instanceof EntityPlayer) {
                     g.drawImage(ep.getImage(), ep.getX(), ep.getY(), null);
                 }
+                Rectangle r = ep.getHitbox().toRect();
+                g.setColor(Color.RED);
+                g.drawRect((int)r.getX(), (int)r.getY(), (int)r.getWidth(), (int)r.getHeight());
+            } else if (e instanceof EntityDamagable) {
+                EntityDamagable ed = (EntityDamagable)e;
+                Rectangle r = ed.getHitbox().toRect();
+                g.setColor(Color.RED);
+                g.drawRect((int)r.getX(), (int)r.getY(), (int)r.getWidth(), (int)r.getHeight());
             }
         }
+        Rectangle r = player.getHitbox().toRect();
+        g.setColor(Color.RED);
+        g.drawRect((int)r.getX(), (int)r.getY(), (int)r.getWidth(), (int)r.getHeight());
     }
 
     public ArrayList<Entity> getEntities() {

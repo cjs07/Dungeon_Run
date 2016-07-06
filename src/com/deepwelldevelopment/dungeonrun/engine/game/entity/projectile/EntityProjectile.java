@@ -81,5 +81,8 @@ public class EntityProjectile extends Entity {
     public void update() {
         x += dx;
         y += dy;
+
+        hitbox.setX(x);
+        hitbox.setY(y);
     }
 }

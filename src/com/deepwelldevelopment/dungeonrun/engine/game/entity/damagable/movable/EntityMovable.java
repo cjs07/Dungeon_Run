@@ -20,6 +20,9 @@ public class EntityMovable extends EntityDamagable {
     public void update() {
         x += dx;
         y += dy;
+
+        getHitbox().setX(x);
+        getHitbox().setY(y);
     }
 
     public int getX() {
