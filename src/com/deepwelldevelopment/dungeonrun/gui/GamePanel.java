@@ -25,9 +25,14 @@ public class GamePanel extends JPanel implements KeyListener, Runnable{
     Image fullHeart;
     Image halfHeart;
 
+    int framesSinceShot;
+    boolean canFire;
+
     public GamePanel(GameFrame frame) {
         this.frame = frame;
         run = null;
+        width = getWidth();
+        height = getHeight();
         fullHeart = new ImageIcon("res/fullheart.png").getImage();
         halfHeart = new ImageIcon("res/halfheart.png").getImage();
     }
@@ -38,9 +43,10 @@ public class GamePanel extends JPanel implements KeyListener, Runnable{
         System.out.print(c.id + c.name + c.hp + c.damage + c.fireDelay + c.fireRate + c.accuracy + c.speed + c.range + c.luck);
         run.generate();
         paused = false;
+        canFire = true;
         gameThread.start();
-        width = getWidth();
-        height = getHeight();
+
+        System.out.println("" + width + height);
     }
 
     @Override
@@ -54,16 +60,19 @@ public class GamePanel extends JPanel implements KeyListener, Runnable{
 
         if (run.getHp() % 2 == 0) {
             for (int i = 0; i < run.getHp(); i+=2) {
-                g.drawImage(fullHeart, i*fullHeart.getWidth(null), 20, null);
+                g.drawImage(fullHeart, i*fullHeart.getWidth(null), 10, null);
             }
         } else {
             for (int i = 0; i < run.getHp()-1; i+=2) {
-                g.drawImage(fullHeart, i*fullHeart.getWidth(null), 20, null);
+                g.drawImage(fullHeart, i*fullHeart.getWidth(null), 10, null);
             }
-            g.drawImage(halfHeart, (((run.getHp()-1)/2)*fullHeart.getWidth(null)) + (2*fullHeart.getWidth(null)), 20, null);
+            g.drawImage(halfHeart, (((run.getHp()-1)/2)*fullHeart.getWidth(null)) + (2*fullHeart.getWidth(null)), 10, null);
         }
 
         run.getCurrentFloor().getCurrentRoom().draw(this, g);
+
+        g.setColor(Color.BLUE);
+        g.drawRect(run.getPlayer().getX(), run.getPlayer().getY(), 50, 50);
     }
 
     @Override
@@ -75,38 +84,60 @@ public class GamePanel extends JPanel implements KeyListener, Runnable{
     public void keyPressed(KeyEvent e) {
         switch (e.getKeyCode()) {
             case KeyEvent.VK_W:
-                Run.instance.getPlayer().setDx(0).setDy(-1);
+                run.getPlayer().setDy((int) -run.getSpeed());
                 break;
             case KeyEvent.VK_A:
-                Run.instance.getPlayer().setDx(-1).setDy(0);
+                run.getPlayer().setDx((int) -run.getSpeed());
                 break;
             case KeyEvent.VK_S:
-                Run.instance.getPlayer().setDx(0).setDy(1);
+                run.getPlayer().setDy((int) run.getSpeed());
                 break;
             case KeyEvent.VK_D:
-                Run.instance.getPlayer().setDx(1).setDy(0);
+                run.getPlayer().setDx((int) run.getSpeed());
                 break;
             case KeyEvent.VK_UP:
+                if (canFire) {
+                    run.getCurrentFloor().getCurrentRoom().addEntity(run.getPlayer().fireShot(1));
+                    framesSinceShot = 0;
+                    canFire = false;
+                }
                 break;
             case KeyEvent.VK_DOWN:
+                if (canFire) {
+                    run.getCurrentFloor().getCurrentRoom().addEntity(run.getPlayer().fireShot(3));
+                    framesSinceShot = 0;
+                    canFire = false;
+                }
                 break;
             case KeyEvent.VK_LEFT:
+                if (canFire) {
+                    run.getCurrentFloor().getCurrentRoom().addEntity(run.getPlayer().fireShot(0));
+                    framesSinceShot = 0;
+                    canFire = false;
+                }
                 break;
             case KeyEvent.VK_RIGHT:
-                break;
+                if (canFire) {
+                    run.getCurrentFloor().getCurrentRoom().addEntity(run.getPlayer().fireShot(2));
+                    framesSinceShot = 0;
+                    canFire = false;
+                    break;
+                }
             case KeyEvent.VK_ESCAPE:
                 break;
             default:
                 break;
         }
-        System.out.println("key pressed: " + e.getKeyChar());
     }
 
     @Override
     public void keyReleased(KeyEvent e) {
         int keyCode = e.getKeyCode();
-        if (keyCode == KeyEvent.VK_W || keyCode == KeyEvent.VK_A || keyCode == KeyEvent.VK_S || keyCode == KeyEvent.VK_D) {
-            run.getPlayer().setDx(0).setDy(0);
+        if (keyCode == KeyEvent.VK_W || keyCode == KeyEvent.VK_S) {
+            run.getPlayer().setDy(0);
+        }
+        if (keyCode == KeyEvent.VK_A || keyCode == KeyEvent.VK_D) {
+            run.getPlayer().setDx(0);
         }
     }
 
@@ -115,9 +146,15 @@ public class GamePanel extends JPanel implements KeyListener, Runnable{
         while (true) {
             if (!paused) {
                 run.getCurrentFloor().getCurrentRoom().update();
+                Run.instance = run;
+                framesSinceShot++;
+                if (framesSinceShot >= 5*run.getFireDelay()) {
+                    canFire = true;
+                } else {
+                    canFire = false;
+                }
                 repaint();
                 revalidate();
-                System.out.println("frame completed: " + System.currentTimeMillis());
                 try {
                     Thread.sleep(1000/60);
                 } catch (InterruptedException e) {

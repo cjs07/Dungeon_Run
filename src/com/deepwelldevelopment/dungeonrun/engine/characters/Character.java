@@ -34,6 +34,20 @@ public class Character {
         characters[id] = this;
     }
 
+    public Character(int id, String name, int hp, float damage, int fireDelay, float accuracy, float speed, float range, float luck) {
+        this.id = id;
+        this.name = name;
+        this.hp = hp;
+        this.damage = damage;
+        this.fireDelay = fireDelay;
+        this.accuracy = accuracy;
+        this.speed = speed;
+        this.range = range;
+        this.luck = luck;
+
+        characters[id] = this;
+    }
+
     public static void initCharacters() {
         Scanner scanner = null;
         try {
@@ -47,8 +61,7 @@ public class Character {
                 data[i] = scanner.next();
                 if (i==8) {
                     characters[Integer.parseInt(data[0])] = new Character(Integer.parseInt(data[0]), data[1],
-                            Integer.parseInt(data[2]), Float.parseFloat(data[3]),
-                            (int)Math.round(16-(6*Math.sqrt(Math.abs(1.3*(Integer.parseInt(data[4])-10))))), Float.parseFloat(data[4]),
+                            Integer.parseInt(data[2]), Float.parseFloat(data[3]), Integer.parseInt(data[4]),
                             Float.parseFloat(data[5]), Float.parseFloat(data[6]), Float.parseFloat(data[7]), Float.parseFloat(data[8]));
                 }
             }

@@ -2,6 +2,7 @@ package com.deepwelldevelopment.dungeonrun.engine.game;
 
 import com.deepwelldevelopment.dungeonrun.engine.game.entity.Entity;
 import com.deepwelldevelopment.dungeonrun.engine.game.entity.damagable.movable.EntityPlayer;
+import com.deepwelldevelopment.dungeonrun.engine.game.entity.projectile.EntityProjectile;
 import com.deepwelldevelopment.dungeonrun.engine.run.Run;
 
 import javax.swing.*;
@@ -45,6 +46,14 @@ public class Room {
 
         //TODO: DRAW OBSTACLE LAYER
         //TODO: DRAW ENTITIES
+        for (Entity e : entities) {
+            if (e instanceof EntityProjectile) {
+                EntityProjectile ep = (EntityProjectile)e;
+                if (ep.getSource() instanceof EntityPlayer) {
+                    g.drawImage(ep.getImage(), ep.getX(), ep.getY(), null);
+                }
+            }
+        }
     }
 
     public ArrayList<Entity> getEntities() {
@@ -55,6 +64,10 @@ public class Room {
         player = Run.instance.getPlayer();
         entities.forEach(Entity::update);
         player.update();
+    }
+
+    public void addEntity(Entity entity) {
+        entities.add(entity);
     }
 
     public void playerEnter() {
