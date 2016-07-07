@@ -1,5 +1,7 @@
 package com.deepwelldevelopment.dungeonrun.engine.game.entity;
 
+import com.deepwelldevelopment.dungeonrun.engine.game.entity.damagable.movable.enemy.EnemySpider;
+
 import java.awt.*;
 import java.util.ArrayList;
 
@@ -19,7 +21,7 @@ public class Entity {
         this.y = y;
 
         //register in global entity dictionary
-        gameEntities.add(id, this);
+        gameEntities.add(this);
     }
 
     public Entity(Image image, int x, int y){
@@ -35,6 +37,7 @@ public class Entity {
 
     public static void initializeEntityLibrary() {
         gameEntities = new ArrayList<>();
+        new EnemySpider();
     }
 
     public void update() {

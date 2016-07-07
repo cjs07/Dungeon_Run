@@ -18,6 +18,7 @@ public class Room {
     ArrayList<Entity> entities;
     EntityPlayer player;
 
+    private boolean showHitboxes = true;
 
     public Room(Image display, int[][] grid, int[][] entityGrid) {
         this.display = display;
@@ -30,7 +31,9 @@ public class Room {
             for (int y = 0; y < entityGrid[0].length; y++) {
                 int value = entityGrid[x][y];
                 if (value != -1) {
-                    entities.add(Entity.gameEntities.get(entityGrid[x][y]));
+                    Entity toAdd = Entity.gameEntities.get(entityGrid[x][y]);
+                    toAdd.setX(x*(display.getWidth(null)/entityGrid.length)).setY(y*(display.getHeight(null)/entityGrid[0].length));
+                    entities.add(toAdd);
                 }
             }
         }
@@ -46,26 +49,28 @@ public class Room {
         g.drawImage(player.getImage(), player.getX(), player.getY(), null);
 
         //TODO: DRAW OBSTACLE LAYER
-        //TODO: DRAW ENTITIES
         for (Entity e : entities) {
-            if (e instanceof EntityProjectile) {
-                EntityProjectile ep = (EntityProjectile)e;
-                if (ep.getSource() instanceof EntityPlayer) {
-                    g.drawImage(ep.getImage(), ep.getX(), ep.getY(), null);
+            g.drawImage(e.getImage(), e.getX(), e.getY(), null);
+            if (showHitboxes) {
+                if (e instanceof EntityDamagable) {
+                    EntityDamagable ed = (EntityDamagable)e;
+                    Rectangle r = ed.getHitbox().toRect();
+                    g.setColor(Color.RED);
+                    g.drawRect((int) r.getX(), (int) r.getY(), (int) r.getWidth(), (int) r.getHeight());
+                } else if (e instanceof EntityProjectile) {
+                    EntityProjectile ep = (EntityProjectile)e;
+                    Rectangle r = ep.getHitbox().toRect();
+                    g.setColor(Color.RED);
+                    g.drawRect((int) r.getX(), (int) r.getY(), (int) r.getWidth(), (int) r.getHeight());
                 }
-                Rectangle r = ep.getHitbox().toRect();
-                g.setColor(Color.RED);
-                g.drawRect((int)r.getX(), (int)r.getY(), (int)r.getWidth(), (int)r.getHeight());
-            } else if (e instanceof EntityDamagable) {
-                EntityDamagable ed = (EntityDamagable)e;
-                Rectangle r = ed.getHitbox().toRect();
-                g.setColor(Color.RED);
-                g.drawRect((int)r.getX(), (int)r.getY(), (int)r.getWidth(), (int)r.getHeight());
             }
         }
-        Rectangle r = player.getHitbox().toRect();
-        g.setColor(Color.RED);
-        g.drawRect((int)r.getX(), (int)r.getY(), (int)r.getWidth(), (int)r.getHeight());
+
+        if (showHitboxes) {
+            Rectangle r = player.getHitbox().toRect();
+            g.setColor(Color.RED);
+            g.drawRect((int)r.getX(), (int)r.getY(), (int)r.getWidth(), (int)r.getHeight());
+        }
     }
 
     public ArrayList<Entity> getEntities() {
