@@ -4,6 +4,7 @@ import com.deepwelldevelopment.dungeonrun.engine.game.entity.Entity;
 import com.deepwelldevelopment.dungeonrun.engine.game.entity.damagable.EntityDamagable;
 import com.deepwelldevelopment.dungeonrun.engine.game.entity.damagable.movable.EntityPlayer;
 import com.deepwelldevelopment.dungeonrun.engine.game.entity.projectile.EntityProjectile;
+import com.deepwelldevelopment.dungeonrun.engine.physics.PhysicsManager;
 import com.deepwelldevelopment.dungeonrun.engine.run.Run;
 
 import javax.swing.*;
@@ -17,6 +18,7 @@ public class Room {
     int[][] entityGrid;
     ArrayList<Entity> entities;
     EntityPlayer player;
+    PhysicsManager physicsManager;
 
     private boolean showHitboxes = true;
 
@@ -26,6 +28,7 @@ public class Room {
         this.entityGrid = entityGrid;
         entities = new ArrayList<>();
         player = Run.instance.getPlayer();
+        physicsManager = new PhysicsManager(this);
 
         for (int x = 0; x < entityGrid.length; x++) {
             for (int y = 0; y < entityGrid[0].length; y++) {
@@ -49,9 +52,8 @@ public class Room {
         g.drawImage(player.getImage(), player.getX(), player.getY(), null);
 
         //TODO: DRAW OBSTACLE LAYER
+
         for (Entity e : entities) {
-            if (e.getImage() == null) {
-            }
             g.drawImage(e.getImage(), e.getX(), e.getY(), null);
             if (showHitboxes) {
                 if (e instanceof EntityDamagable) {
@@ -83,6 +85,7 @@ public class Room {
         player = Run.instance.getPlayer();
         entities.forEach(Entity::update);
         player.update();
+        physicsManager.tick(entities);
     }
 
     public void addEntity(Entity entity) {

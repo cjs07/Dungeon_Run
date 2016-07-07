@@ -9,13 +9,10 @@ import java.util.ArrayList;
 
 public class PhysicsManager {
 
-    ArrayList<Entity> entities;
-
     public PhysicsManager(Room room) {
-        entities = room.getEntities();
     }
 
-    public void tick() {
+    public void tick(ArrayList<Entity> entities) {
         for (Entity e : entities) {
             if (e instanceof EntityDamagable) {
                 EntityDamagable ed = (EntityDamagable) e;
@@ -25,7 +22,9 @@ public class PhysicsManager {
                         EntityProjectile ep = (EntityProjectile) source;
                         if (ep.getSource() != ed) { //shots are not hitting entity that fired them
                             Hitbox sourceBox = ep.getHitbox();
-
+                            if (targetBox.intersects(sourceBox.toRect())) {
+                                System.out.println("collision");
+                            }
                         }
                     }
                 }
