@@ -9,21 +9,13 @@ import java.awt.*;
 
 public class EntityPlayer extends EntityMovable {
 
-    Image image;
-
     public EntityPlayer(int id, double hp, Hitbox hitbox, int x, int y) {
-        super(id, hp, hitbox, x, y);
-
-        image = new ImageIcon("res/player.png").getImage();
+        super(id, new ImageIcon("res/player.png").getImage(), x, y, hp, hitbox);
     }
 
     @Override
     public void damage(double amount) {
 
-    }
-
-    public Image getImage() {
-        return image;
     }
 
     public EntityProjectile fireShot(int direction) {

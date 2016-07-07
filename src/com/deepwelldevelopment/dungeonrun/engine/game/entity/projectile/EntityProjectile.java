@@ -11,26 +11,20 @@ public class EntityProjectile extends Entity {
 
     Entity source;
     Hitbox hitbox;
-    Image image;
 
-    int x;
-    int y;
     int dx;
     int dy;
 
     public EntityProjectile(Entity source, Hitbox hitbox, Image image, int x, int y) {
+        super(image, x, y);
         this.source = source;
         this.hitbox = hitbox;
-        this.image = image;
-        this.x = x;
-        this.y = y;
     }
 
     public EntityProjectile(Entity source, Hitbox hitbox, int x, int y) {
+        super(x, y);
         this.source = source;
         this.hitbox = hitbox;
-        this.x = x;
-        this.y = y;
 
         if (source instanceof EntityPlayer) {
             image = new ImageIcon("res/playershot.png").getImage();
@@ -43,28 +37,6 @@ public class EntityProjectile extends Entity {
 
     public Hitbox getHitbox() {
         return hitbox;
-    }
-
-    public Image getImage() {
-        return image;
-    }
-
-    public int getX() {
-        return x;
-    }
-
-    public int getY() {
-        return y;
-    }
-
-    public EntityProjectile setX(int x) {
-        this.x = x;
-        return this;
-    }
-
-    public EntityProjectile setY(int y) {
-        this.y = y;
-        return this;
     }
 
     public EntityProjectile setDx(int dx) {

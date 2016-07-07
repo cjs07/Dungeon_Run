@@ -3,18 +3,15 @@ package com.deepwelldevelopment.dungeonrun.engine.game.entity.damagable.movable;
 import com.deepwelldevelopment.dungeonrun.engine.game.entity.damagable.EntityDamagable;
 import com.deepwelldevelopment.dungeonrun.engine.physics.Hitbox;
 
-public class EntityMovable extends EntityDamagable {
+import java.awt.*;
 
-    int x;
-    int y;
+public class EntityMovable extends EntityDamagable {
 
     int dx;
     int dy;
 
-    public EntityMovable(int id, double hp, Hitbox hitbox, int x, int y) {
-        super(id, hp, hitbox);
-        this.x = x;
-        this.y = y;
+    public EntityMovable(int id, Image image, int x, int y, double hp, Hitbox hitbox) {
+        super(id, image, x, y, hp, hitbox);
     }
 
     public void update() {
