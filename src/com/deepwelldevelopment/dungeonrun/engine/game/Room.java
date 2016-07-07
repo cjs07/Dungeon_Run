@@ -32,7 +32,7 @@ public class Room {
                 int value = entityGrid[x][y];
                 if (value != -1) {
                     Entity toAdd = Entity.gameEntities.get(entityGrid[x][y]);
-                    toAdd.setX(x*(display.getWidth(null)/entityGrid.length)).setY(y*(display.getHeight(null)/entityGrid[0].length));
+                    toAdd.setX(x*(display.getWidth(null)/entityGrid.length)).setY(-y*(display.getHeight(null)/entityGrid[0].length));
                     entities.add(toAdd);
                 }
             }
@@ -50,6 +50,8 @@ public class Room {
 
         //TODO: DRAW OBSTACLE LAYER
         for (Entity e : entities) {
+            if (e.getImage() == null) {
+            }
             g.drawImage(e.getImage(), e.getX(), e.getY(), null);
             if (showHitboxes) {
                 if (e instanceof EntityDamagable) {
