@@ -2,28 +2,53 @@ package com.deepwelldevelopment.dungeonrun.engine.physics;
 
 import com.deepwelldevelopment.dungeonrun.engine.game.Room;
 import com.deepwelldevelopment.dungeonrun.engine.game.entity.Entity;
-import com.deepwelldevelopment.dungeonrun.engine.game.entity.damagable.EntityDamagable;
+import com.deepwelldevelopment.dungeonrun.engine.game.entity.damagable.EntityDamageable;
+import com.deepwelldevelopment.dungeonrun.engine.game.entity.damagable.movable.EntityPlayer;
+import com.deepwelldevelopment.dungeonrun.engine.game.entity.damagable.movable.enemy.EntityEnemy;
 import com.deepwelldevelopment.dungeonrun.engine.game.entity.projectile.EntityProjectile;
+import com.deepwelldevelopment.dungeonrun.engine.run.Run;
 
 import java.util.ArrayList;
 
 public class PhysicsManager {
 
+    Room room;
+
     public PhysicsManager(Room room) {
+        this.room = room;
     }
 
     public void tick(ArrayList<Entity> entities) {
-        for (Entity e : entities) {
-            if (e instanceof EntityDamagable) {
-                EntityDamagable ed = (EntityDamagable) e;
-                Hitbox targetBox = ed.getHitbox();
+        entities.add(Run.instance.getPlayer());
+        for (Entity target : entities) {
+            if (target instanceof EntityDamageable) {
+                EntityDamageable targetDamageable = (EntityDamageable) target;
+                Hitbox targetBox = targetDamageable.getHitbox();
                 for (Entity source : entities) {
                     if (source instanceof EntityProjectile) {
-                        EntityProjectile ep = (EntityProjectile) source;
-                        if (ep.getSource() != ed) { //shots are not hitting entity that fired them
-                            Hitbox sourceBox = ep.getHitbox();
-                            if (targetBox.intersects(sourceBox.toRect())) {
-                                System.out.println("collision");
+                        EntityProjectile projectileSource = (EntityProjectile) source;
+                        if (projectileSource.getSource() != targetDamageable) { //shots are not hitting entity that fired them
+                            Hitbox sourceBox = projectileSource.getHitbox();
+                            if (targetBox.intersects(sourceBox)) {
+                                System.out.println("projectile collision");
+                                source.destroy();
+                                if (projectileSource.getSource() == Run.instance.getPlayer()) {
+                                    targetDamageable.damage(Run.instance.getDamage());
+                                } else {
+                                    if (targetDamageable instanceof EntityPlayer) {
+                                        EntityPlayer player = (EntityPlayer) targetDamageable;
+                                    }
+                                }
+                            }
+                        }
+                    } else if (source instanceof EntityEnemy) {
+                        EntityEnemy sourceEnemy = (EntityEnemy) source;
+                        Hitbox sourceBox = sourceEnemy.getHitbox();
+                        if (targetBox.intersects(sourceBox)) {
+                            if (target instanceof EntityPlayer) {
+                                EntityPlayer targetPlayer = (EntityPlayer) target;
+                                System.out.println("contact damage");
+                                targetPlayer.damage(1);
                             }
                         }
                     }

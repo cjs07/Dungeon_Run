@@ -8,11 +8,11 @@ import java.util.ArrayList;
 public class Entity {
 
     public static ArrayList<Entity> gameEntities;
-
-    int id;
     protected Image image;
     protected int x;
     protected int y;
+    int id;
+    boolean destroy;
 
     public Entity(int id, Image image, int x, int y) {
         this.id = id;
@@ -51,17 +51,25 @@ public class Entity {
         return x;
     }
 
-    public int getY() {
-        return y;
-    }
-
     public Entity setX(int x) {
         this.x = x;
         return this;
     }
 
+    public int getY() {
+        return y;
+    }
+
     public Entity setY(int y) {
         this.y = y;
         return this;
+    }
+
+    public void destroy() {
+        destroy = true;
+    }
+
+    public boolean destroyed() {
+        return destroy;
     }
 }

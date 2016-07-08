@@ -8,6 +8,7 @@ public class GameFrame extends JFrame {
     public MainMenuPanel mmp;
     ClassSelectPanel csp;
     GamePanel gp;
+    GameOverPanel gop;
 
     public GameFrame() {
         super("Dungeon Run");
@@ -18,6 +19,7 @@ public class GameFrame extends JFrame {
         mmp = new MainMenuPanel(this);
         csp = new ClassSelectPanel(this);
         gp = new GamePanel(this);
+        gop = new GameOverPanel(this);
         mmp.isActive = true;
         setContentPane(mmp);
     }

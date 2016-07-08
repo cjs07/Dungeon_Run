@@ -2,6 +2,7 @@ package com.deepwelldevelopment.dungeonrun.engine.run;
 
 import com.deepwelldevelopment.dungeonrun.engine.characters.Character;
 import com.deepwelldevelopment.dungeonrun.engine.game.Floor;
+import com.deepwelldevelopment.dungeonrun.engine.game.Room;
 import com.deepwelldevelopment.dungeonrun.engine.game.entity.damagable.movable.EntityPlayer;
 import com.deepwelldevelopment.dungeonrun.engine.physics.Hitbox;
 import com.deepwelldevelopment.dungeonrun.engine.prefab.Prefab;
@@ -69,6 +70,10 @@ public class Run {
         this.luck = luck;
     }
 
+    public void damagePlayer(int amount) {
+        hp -= amount;
+    }
+
     public Generator getGenerator() {
         return generator;
     }
@@ -124,5 +129,24 @@ public class Run {
     public void generate() {
         floors = generator.generateRun(this);
         floorIndex = 0;
+    }
+
+    public void end() {
+        character = null;
+        generator = null;
+        prefabLoader = null;
+        prefabsForFloor = null;
+        player = null;
+        for (Floor f : floors) {
+            Room[][] rooms = f.getLayout();
+            for (int i = 0; i < rooms.length; i++) {
+                for (int j = 0; j < rooms[0].length; j++) {
+                    if (rooms[i][j] != null) {
+                        rooms[i][j].destroy();
+                    }
+                }
+            }
+        }
+        instance = null;
     }
 }

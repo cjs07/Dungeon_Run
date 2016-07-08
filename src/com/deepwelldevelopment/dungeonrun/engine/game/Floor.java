@@ -29,6 +29,10 @@ public class Floor {
         Run.instance.getPlayer().setY(GamePanel.height/2);
     }
 
+    public Room[][] getLayout() {
+        return layout;
+    }
+
     public Room getCurrentRoom() {
         return currentRoom;
     }

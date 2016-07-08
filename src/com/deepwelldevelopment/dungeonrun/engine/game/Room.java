@@ -1,7 +1,7 @@
 package com.deepwelldevelopment.dungeonrun.engine.game;
 
 import com.deepwelldevelopment.dungeonrun.engine.game.entity.Entity;
-import com.deepwelldevelopment.dungeonrun.engine.game.entity.damagable.EntityDamagable;
+import com.deepwelldevelopment.dungeonrun.engine.game.entity.damagable.EntityDamageable;
 import com.deepwelldevelopment.dungeonrun.engine.game.entity.damagable.movable.EntityPlayer;
 import com.deepwelldevelopment.dungeonrun.engine.game.entity.projectile.EntityProjectile;
 import com.deepwelldevelopment.dungeonrun.engine.physics.PhysicsManager;
@@ -35,7 +35,8 @@ public class Room {
                 int value = entityGrid[x][y];
                 if (value != -1) {
                     Entity toAdd = Entity.gameEntities.get(entityGrid[x][y]);
-                    toAdd.setX(x*(display.getWidth(null)/entityGrid.length)).setY(-y*(display.getHeight(null)/entityGrid[0].length));
+                    //toAdd.setX(x*(display.getWidth(null)/entityGrid.length)).setY(-y*(display.getHeight(null)/entityGrid[0].length));
+                    toAdd.setX(200).setY(450);
                     entities.add(toAdd);
                 }
             }
@@ -56,8 +57,8 @@ public class Room {
         for (Entity e : entities) {
             g.drawImage(e.getImage(), e.getX(), e.getY(), null);
             if (showHitboxes) {
-                if (e instanceof EntityDamagable) {
-                    EntityDamagable ed = (EntityDamagable)e;
+                if (e instanceof EntityDamageable) {
+                    EntityDamageable ed = (EntityDamageable) e;
                     Rectangle r = ed.getHitbox().toRect();
                     g.setColor(Color.RED);
                     g.drawRect((int) r.getX(), (int) r.getY(), (int) r.getWidth(), (int) r.getHeight());
@@ -83,9 +84,17 @@ public class Room {
 
     public void update() {
         player = Run.instance.getPlayer();
-        entities.forEach(Entity::update);
+        ArrayList postUpdate = (ArrayList) entities.clone();
+        for (Entity e : entities) {
+            if (e.destroyed()) {
+                postUpdate.remove(e);
+            } else {
+                e.update();
+            }
+        }
         player.update();
         physicsManager.tick(entities);
+        entities = postUpdate;
     }
 
     public void addEntity(Entity entity) {
@@ -98,5 +107,16 @@ public class Room {
 
     public void playerExit() {
 
+    }
+
+    public void destroy() {
+        entities.forEach(Entity::destroy);
+        entities.clear();
+        player = null;
+        entities = null;
+        display = null;
+        grid = null;
+        entityGrid = null;
+        physicsManager = null;
     }
 }

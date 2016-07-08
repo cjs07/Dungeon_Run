@@ -17,8 +17,6 @@ public class GamePanel extends JPanel implements KeyListener, Runnable{
 
     boolean paused;
 
-    Thread gameThread = new Thread(this);
-
     GameFrame frame;
     Run run;
 
@@ -44,7 +42,7 @@ public class GamePanel extends JPanel implements KeyListener, Runnable{
         run.generate();
         paused = false;
         canFire = true;
-        gameThread.start();
+        new Thread(this).start();
 
         System.out.println("" + width + height);
     }
@@ -118,9 +116,10 @@ public class GamePanel extends JPanel implements KeyListener, Runnable{
                     run.getCurrentFloor().getCurrentRoom().addEntity(run.getPlayer().fireShot(2));
                     framesSinceShot = 0;
                     canFire = false;
-                    break;
                 }
+                break;
             case KeyEvent.VK_ESCAPE:
+                System.exit(0);
                 break;
             default:
                 break;
@@ -145,13 +144,19 @@ public class GamePanel extends JPanel implements KeyListener, Runnable{
                 run.getCurrentFloor().getCurrentRoom().update();
                 Run.instance = run;
                 framesSinceShot++;
-                if (framesSinceShot >= 2*run.getFireDelay()) {
-                    canFire = true;
-                } else {
-                    canFire = false;
-                }
+                canFire = framesSinceShot >= 2 * run.getFireDelay();
                 repaint();
                 revalidate();
+                if (Run.instance.getHp() <= 0) { //player is dead
+                    isActive = false;
+                    frame.gop.isActive = true;
+                    frame.removeKeyListener(this);
+                    frame.addKeyListener(frame.gop);
+                    frame.setContentPane(frame.gop);
+                    frame.gop.setPreviousClass(Run.instance.character.id);
+                    Run.instance.end();
+                    return;
+                }
                 try {
                     Thread.sleep(1000/60);
                 } catch (InterruptedException e) {

@@ -1,11 +1,11 @@
 package com.deepwelldevelopment.dungeonrun.engine.game.entity.damagable.movable;
 
-import com.deepwelldevelopment.dungeonrun.engine.game.entity.damagable.EntityDamagable;
+import com.deepwelldevelopment.dungeonrun.engine.game.entity.damagable.EntityDamageable;
 import com.deepwelldevelopment.dungeonrun.engine.physics.Hitbox;
 
 import java.awt.*;
 
-public class EntityMovable extends EntityDamagable {
+public class EntityMovable extends EntityDamageable {
 
     int dx;
     int dy;

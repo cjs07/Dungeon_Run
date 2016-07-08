@@ -4,11 +4,6 @@ import java.awt.*;
 
 public class Hitbox extends Rectangle {
 
-    int x;
-    int y;
-    int width;
-    int height;
-
     public Hitbox(int x, int y, int width, int height) {
         super(x, y, width, height);
         this.x = x;

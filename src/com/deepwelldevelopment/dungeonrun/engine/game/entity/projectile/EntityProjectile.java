@@ -11,20 +11,32 @@ public class EntityProjectile extends Entity {
 
     Entity source;
     Hitbox hitbox;
+    double range;
+
+    int startX;
+    int startY;
 
     int dx;
     int dy;
 
-    public EntityProjectile(Entity source, Hitbox hitbox, Image image, int x, int y) {
+    public EntityProjectile(Entity source, Hitbox hitbox, Image image, int x, int y, double range) {
         super(image, x, y);
         this.source = source;
         this.hitbox = hitbox;
+        this.range = range;
+
+        startX = x;
+        startY = y;
     }
 
-    public EntityProjectile(Entity source, Hitbox hitbox, int x, int y) {
+    public EntityProjectile(Entity source, Hitbox hitbox, int x, int y, double range) {
         super(x, y);
         this.source = source;
         this.hitbox = hitbox;
+        this.range = range;
+
+        startX = x;
+        startY = y;
 
         if (source instanceof EntityPlayer) {
             image = new ImageIcon("res/playershot.png").getImage();
@@ -56,5 +68,15 @@ public class EntityProjectile extends Entity {
 
         hitbox.setX(x);
         hitbox.setY(y);
+
+        int xTraveled = x - startX;
+        int yTraveled = y - startY;
+        double traveled = Math.sqrt((xTraveled * xTraveled) + (yTraveled * yTraveled));
+
+        System.out.println(traveled);
+
+        if (traveled >= range) {
+            destroy();
+        }
     }
 }
