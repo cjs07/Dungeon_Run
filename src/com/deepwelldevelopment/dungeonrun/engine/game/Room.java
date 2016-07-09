@@ -5,7 +5,10 @@ import com.deepwelldevelopment.dungeonrun.engine.game.entity.damagable.EntityDam
 import com.deepwelldevelopment.dungeonrun.engine.game.entity.damagable.movable.EntityPlayer;
 import com.deepwelldevelopment.dungeonrun.engine.game.entity.damagable.movable.enemy.EnemySpider;
 import com.deepwelldevelopment.dungeonrun.engine.game.entity.damagable.movable.enemy.EntityEnemy;
+import com.deepwelldevelopment.dungeonrun.engine.game.entity.item.EntityItemPedestal;
 import com.deepwelldevelopment.dungeonrun.engine.game.entity.projectile.EntityProjectile;
+import com.deepwelldevelopment.dungeonrun.engine.game.item.Item;
+import com.deepwelldevelopment.dungeonrun.engine.physics.Hitbox;
 import com.deepwelldevelopment.dungeonrun.engine.physics.PhysicsManager;
 import com.deepwelldevelopment.dungeonrun.engine.run.Run;
 
@@ -51,6 +54,8 @@ public class Room {
                 }
             }
         }
+
+        entities.add(new EntityItemPedestal(Item.items.get(0), new Hitbox(0, 0, 64, 64)).setX(500).setY(300));
     }
 
     public void draw(JPanel source, Graphics g) {
@@ -79,6 +84,12 @@ public class Room {
                     g.drawRect((int) r.getX(), (int) r.getY(), (int) r.getWidth(), (int) r.getHeight());
                 }
             }
+            if (e instanceof EntityItemPedestal) {
+                EntityItemPedestal itemPedestal = (EntityItemPedestal)e;
+                if (itemPedestal.getItem() != null) {
+                    g.drawImage(itemPedestal.getItem().getImage(), itemPedestal.getX(), itemPedestal.getY()-80, null);
+                }
+            }
         }
 
         if (showHitboxes) {
@@ -92,7 +103,7 @@ public class Room {
         return entities;
     }
 
-    public void update() {
+    public synchronized void update() {
         player = Run.instance.getPlayer();
         ArrayList postUpdate = (ArrayList) entities.clone();
         for (Entity e : entities) {
@@ -120,7 +131,7 @@ public class Room {
     }
 
     public void destroy() {
-        //entities.forEach(Entity::destroy);
+        entities.forEach(Entity::destroy);
         entities.clear();
         player = null;
         entities = null;

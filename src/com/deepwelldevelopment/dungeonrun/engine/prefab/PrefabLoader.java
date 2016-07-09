@@ -34,6 +34,8 @@ public class PrefabLoader {
                 entityGrid[x][y] = entityScanner.nextInt();
             }
         }
+        gridScanner.close();
+        entityScanner.close();
         return new Prefab(image, grid, entityGrid);
     }
 

@@ -5,6 +5,7 @@ import com.deepwelldevelopment.dungeonrun.engine.game.Floor;
 import com.deepwelldevelopment.dungeonrun.engine.game.Room;
 import com.deepwelldevelopment.dungeonrun.engine.game.entity.Entity;
 import com.deepwelldevelopment.dungeonrun.engine.game.entity.damagable.movable.EntityPlayer;
+import com.deepwelldevelopment.dungeonrun.engine.game.item.Item;
 import com.deepwelldevelopment.dungeonrun.engine.physics.Hitbox;
 import com.deepwelldevelopment.dungeonrun.engine.prefab.Prefab;
 import com.deepwelldevelopment.dungeonrun.engine.prefab.PrefabLoader;
@@ -37,6 +38,8 @@ public class Run {
     Floor[] floors;
     int floorIndex;
 
+    ArrayList<Item> items;
+
     public Run(Character character) {
         this.character = character;
         hp = character.hp;
@@ -58,6 +61,7 @@ public class Run {
         int x = GamePanel.width/2;
         int y = GamePanel.height/2;
         player = new EntityPlayer(0, hp, new Hitbox(x, y, 64, 64), x, y);
+        items = new ArrayList<>();
     }
 
     public Run(int hp, float damage, int fireDelay, float fireRate, float accuracy, float speed, float range, float luck) {
@@ -73,6 +77,15 @@ public class Run {
 
     public void damagePlayer(int amount) {
         hp -= amount;
+        for (Item i : items) {
+            i.onPlayerDamaged();
+        }
+    }
+
+    public void addItem(Item item) {
+        items.add(item);
+        item.onPickup();
+        System.out.println("" + hp + damage + fireDelay + accuracy + speed + range + luck);
     }
 
     public Generator getGenerator() {
@@ -123,8 +136,44 @@ public class Run {
         return luck;
     }
 
+    public ArrayList<Item> getItems() {
+        return items;
+    }
+
     public void updatePlayer(EntityPlayer player) {
         this.player = player;
+    }
+
+    public void setHp(int hp) {
+        this.hp = hp;
+    }
+
+    public void setDamage(float damage) {
+        this.damage = damage;
+    }
+
+    public void setFireDelay(int fireDelay) {
+        this.fireDelay = fireDelay;
+    }
+
+    public void setFireRate(float fireRate) {
+        this.fireRate = fireRate;
+    }
+
+    public void setAccuracy(float accuracy) {
+        this.accuracy = accuracy;
+    }
+
+    public void setSpeed(float speed) {
+        this.speed = speed;
+    }
+
+    public void setRange(float range) {
+        this.range = range;
+    }
+
+    public void setLuck(float luck) {
+        this.luck = luck;
     }
 
     public void generate() {

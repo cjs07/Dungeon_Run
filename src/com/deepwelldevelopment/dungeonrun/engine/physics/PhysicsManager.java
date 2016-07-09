@@ -5,6 +5,7 @@ import com.deepwelldevelopment.dungeonrun.engine.game.entity.Entity;
 import com.deepwelldevelopment.dungeonrun.engine.game.entity.damagable.EntityDamageable;
 import com.deepwelldevelopment.dungeonrun.engine.game.entity.damagable.movable.EntityPlayer;
 import com.deepwelldevelopment.dungeonrun.engine.game.entity.damagable.movable.enemy.EntityEnemy;
+import com.deepwelldevelopment.dungeonrun.engine.game.entity.item.EntityItemPedestal;
 import com.deepwelldevelopment.dungeonrun.engine.game.entity.projectile.EntityProjectile;
 import com.deepwelldevelopment.dungeonrun.engine.run.Run;
 
@@ -49,6 +50,14 @@ public class PhysicsManager {
                                 EntityPlayer targetPlayer = (EntityPlayer) target;
                                 System.out.println("contact damage");
                                 targetPlayer.damage(1);
+                            }
+                        }
+                    } else if (source instanceof EntityItemPedestal) {
+                        EntityItemPedestal sourceItemPedestal = (EntityItemPedestal)source;
+                        Hitbox sourceBox = sourceItemPedestal.getHitbox();
+                        if (targetBox.intersects(sourceBox)) {
+                            if (target instanceof EntityPlayer) {
+                                sourceItemPedestal.pickupItem();
                             }
                         }
                     }

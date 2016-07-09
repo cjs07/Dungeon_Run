@@ -1,12 +1,15 @@
 package com.deepwelldevelopment.dungeonrun.gui;
 
 import com.deepwelldevelopment.dungeonrun.engine.characters.Character;
+import com.deepwelldevelopment.dungeonrun.engine.game.item.Item;
 import com.deepwelldevelopment.dungeonrun.engine.run.Run;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.Collections;
+import java.util.Random;
 
 public class GamePanel extends JPanel implements KeyListener, Runnable{
 
@@ -43,6 +46,8 @@ public class GamePanel extends JPanel implements KeyListener, Runnable{
         paused = false;
         canFire = true;
         new Thread(this).start();
+
+        Collections.shuffle(Item.items, new Random(run.getGenerator().generateRandomSeed()));
 
         System.out.println("" + width + height);
     }
@@ -119,7 +124,7 @@ public class GamePanel extends JPanel implements KeyListener, Runnable{
                 }
                 break;
             case KeyEvent.VK_ESCAPE:
-                System.exit(0);
+                Run.instance.setHp(0);
                 break;
             default:
                 break;
