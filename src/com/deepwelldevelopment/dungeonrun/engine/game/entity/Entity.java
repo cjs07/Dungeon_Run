@@ -43,6 +43,10 @@ public class Entity {
     public void update() {
     }
 
+    public int getId() {
+        return id;
+    }
+
     public Image getImage() {
         return image;
     }

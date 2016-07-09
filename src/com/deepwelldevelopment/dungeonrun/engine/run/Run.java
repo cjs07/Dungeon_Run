@@ -3,6 +3,7 @@ package com.deepwelldevelopment.dungeonrun.engine.run;
 import com.deepwelldevelopment.dungeonrun.engine.characters.Character;
 import com.deepwelldevelopment.dungeonrun.engine.game.Floor;
 import com.deepwelldevelopment.dungeonrun.engine.game.Room;
+import com.deepwelldevelopment.dungeonrun.engine.game.entity.Entity;
 import com.deepwelldevelopment.dungeonrun.engine.game.entity.damagable.movable.EntityPlayer;
 import com.deepwelldevelopment.dungeonrun.engine.physics.Hitbox;
 import com.deepwelldevelopment.dungeonrun.engine.prefab.Prefab;
@@ -136,6 +137,7 @@ public class Run {
         generator = null;
         prefabLoader = null;
         prefabsForFloor = null;
+        Entity.gameEntities.remove(player);
         player = null;
         for (Floor f : floors) {
             Room[][] rooms = f.getLayout();

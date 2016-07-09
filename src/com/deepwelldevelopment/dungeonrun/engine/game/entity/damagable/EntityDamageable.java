@@ -18,6 +18,10 @@ public class EntityDamageable extends Entity {
 
     }
 
+    public double getHp() {
+        return hp;
+    }
+
     public Hitbox getHitbox() {
         return hitbox;
     }

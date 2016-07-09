@@ -3,6 +3,8 @@ package com.deepwelldevelopment.dungeonrun.engine.game;
 import com.deepwelldevelopment.dungeonrun.engine.game.entity.Entity;
 import com.deepwelldevelopment.dungeonrun.engine.game.entity.damagable.EntityDamageable;
 import com.deepwelldevelopment.dungeonrun.engine.game.entity.damagable.movable.EntityPlayer;
+import com.deepwelldevelopment.dungeonrun.engine.game.entity.damagable.movable.enemy.EnemySpider;
+import com.deepwelldevelopment.dungeonrun.engine.game.entity.damagable.movable.enemy.EntityEnemy;
 import com.deepwelldevelopment.dungeonrun.engine.game.entity.projectile.EntityProjectile;
 import com.deepwelldevelopment.dungeonrun.engine.physics.PhysicsManager;
 import com.deepwelldevelopment.dungeonrun.engine.run.Run;
@@ -34,9 +36,17 @@ public class Room {
             for (int y = 0; y < entityGrid[0].length; y++) {
                 int value = entityGrid[x][y];
                 if (value != -1) {
-                    Entity toAdd = Entity.gameEntities.get(entityGrid[x][y]);
-                    //toAdd.setX(x*(display.getWidth(null)/entityGrid.length)).setY(-y*(display.getHeight(null)/entityGrid[0].length));
-                    toAdd.setX(200).setY(450);
+                    int id = ((EntityEnemy) (Entity.gameEntities.get(entityGrid[x][y]))).getEnemyId();
+                    Entity toAdd;
+                    switch (id) {
+                        case EntityEnemy.SPIDER_ID:
+                            toAdd = new EnemySpider();
+                            break;
+                        default:
+                            toAdd = new EnemySpider();
+                            break;
+                    }
+                    toAdd.setX(x * (display.getWidth(null) / entityGrid.length)).setY(y * (display.getHeight(null) / entityGrid[0].length));
                     entities.add(toAdd);
                 }
             }
@@ -110,7 +120,7 @@ public class Room {
     }
 
     public void destroy() {
-        entities.forEach(Entity::destroy);
+        //entities.forEach(Entity::destroy);
         entities.clear();
         player = null;
         entities = null;
