@@ -1,32 +1,71 @@
 package com.deepwelldevelopment.dungeonrun.engine.game;
 
+import com.deepwelldevelopment.dungeonrun.engine.DungeonRun;
+import com.deepwelldevelopment.dungeonrun.engine.game.entity.EntityDoor;
+import com.deepwelldevelopment.dungeonrun.engine.physics.Hitbox;
 import com.deepwelldevelopment.dungeonrun.engine.prefab.Prefab;
-import com.deepwelldevelopment.dungeonrun.engine.run.Run;
-import com.deepwelldevelopment.dungeonrun.gui.GamePanel;
+
+import javax.swing.*;
 
 public class Floor {
 
+    //direction constants
+    public static final int LEFT = 0;
+    public static final int UP = 1;
+    public static final int RIGHT = 2;
+    public static final int DOWN = 3;
+
     Room[][] layout;
     Room currentRoom;
+    int currentX;
+    int currentY;
 
     public Floor(int[][] layout, Prefab[][] prefabLayout) {
         this.layout = new Room[layout.length][layout[0].length];
 
-        for (int x = 0; x < layout.length; x++) {
+        System.out.println("" + DungeonRun.library.getScreenWidth() + DungeonRun.library.getScreenHeight());
+
+        for (int x = 0; x < layout[0].length; x++) {
             for (int y = 0; y < layout.length; y++) {
-                if (layout[x][y] == 0) {
-                    this.layout[x][y] = null;
+                if (layout[y][x] == 0) {
+                    this.layout[y][x] = null;
                 } else {
-                    this.layout[x][y] = prefabLayout[x][y].toRoom();
+                    Room toAdd = prefabLayout[y][x].toRoom();
+                    if (y > 0) {
+                        if (layout[y - 1][x] == 1 || layout[y - 1][x] == 2) {
+                            toAdd.addEntity(new EntityDoor(new ImageIcon("res/assets/doorleft.png").getImage(), 0, 0, new Hitbox(0, 0, 128, 64), LEFT));
+                        }
+                    }
+
+                    if (x > 0) {
+                        if (layout[y][x - 1] == 1 || layout[y][x - 1] == 2) {
+                            toAdd.addEntity(new EntityDoor(new ImageIcon("res/assets/doorup.png").getImage(), 0, 0, new Hitbox(0, 0, 64, 128), UP));
+                        }
+                    }
+
+                    if (y < layout.length-1) {
+                        if (layout[y + 1][x] == 1 || layout[y + 1][x] == 2) {
+                            toAdd.addEntity(new EntityDoor(new ImageIcon("res/assets/doorright.png").getImage(), 0, 0, new Hitbox(0, 0, 128, 64), RIGHT));
+                        }
+                    }
+
+                    if (x < layout[0].length-1) {
+                        if (layout[y][x + 1] == 1 || layout[y][x + 1] == 2) {
+                            toAdd.addEntity(new EntityDoor(new ImageIcon("res/assets/doordown.png").getImage(), 0, 0, new Hitbox(0, 0, 64, 128), DOWN));
+                        }
+                    }
+                    toAdd.initializeDoors();
+                    this.layout[y][x] = toAdd;
                 }
 
-                if (layout[x][y] == 2) {
+                if (layout[y][x] == 2) {
                     currentRoom = this.layout[x][y];
+                    currentX = x;
+                    currentY = y;
                 }
             }
+            System.out.println("" + currentX + ", " + currentY);
         }
-        Run.instance.getPlayer().setX(GamePanel.width/2);
-        Run.instance.getPlayer().setY(GamePanel.height/2);
     }
 
     public Room[][] getLayout() {
@@ -38,6 +77,32 @@ public class Floor {
     }
 
     public void moveRoom(int direction) {
-
+        int dx = 0;
+        int dy = 0;
+        switch (direction) {
+            case LEFT:
+                dx = 0;
+                dy = -1;
+                break;
+            case UP:
+                dx = -1;
+                dy = 0;
+                break;
+            case RIGHT:
+                dx = 0;
+                dy = 1;
+                break;
+            case DOWN:
+                dx = 1;
+                dy = 0;
+                break;
+            default:
+                break;
+        }
+        currentRoom = layout[currentY+dy][currentX+dx];
+        currentX += dx;
+        currentY += dy;
+        System.out.println("room moved");
+        System.out.println("" + currentX + ", " + currentY);
     }
 }

@@ -2,6 +2,7 @@ package com.deepwelldevelopment.dungeonrun.engine.physics;
 
 import com.deepwelldevelopment.dungeonrun.engine.game.Room;
 import com.deepwelldevelopment.dungeonrun.engine.game.entity.Entity;
+import com.deepwelldevelopment.dungeonrun.engine.game.entity.EntityDoor;
 import com.deepwelldevelopment.dungeonrun.engine.game.entity.damagable.EntityDamageable;
 import com.deepwelldevelopment.dungeonrun.engine.game.entity.damagable.movable.EntityPlayer;
 import com.deepwelldevelopment.dungeonrun.engine.game.entity.damagable.movable.enemy.EntityEnemy;
@@ -58,6 +59,16 @@ public class PhysicsManager {
                         if (targetBox.intersects(sourceBox)) {
                             if (target instanceof EntityPlayer) {
                                 sourceItemPedestal.pickupItem();
+                            }
+                        }
+                    } else if (source instanceof EntityDoor) {
+                        EntityDoor sourceDoor = (EntityDoor) source;
+                        Hitbox sourceBox = sourceDoor.getHitbox();
+                        if (target instanceof EntityPlayer) {
+                            if (sourceBox.contains(targetBox)) {
+                                if (sourceDoor.isOpen()) {
+                                    Run.instance.getCurrentFloor().moveRoom(sourceDoor.getDirection());
+                                }
                             }
                         }
                     }

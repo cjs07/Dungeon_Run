@@ -24,14 +24,14 @@ public class PrefabLoader {
         Scanner entityScanner = new Scanner(entityFile);
         int [][] grid = new int[50][50];
         int [][] entityGrid = new int[50][50];
-        for (int y = 0; y < grid[0].length; y++) {
-            for (int x = 0; x < grid.length; x++) {
-                grid[x][y] = gridScanner.nextInt();
+        for (int y = 0; y < grid.length; y++) {
+            for (int x = 0; x < grid[0].length; x++) {
+                grid[y][x] = gridScanner.nextInt();
             }
         }
-        for (int y = 0; y < entityGrid[0].length; y++) {
-            for (int x = 0; x < entityGrid.length; x++) {
-                entityGrid[x][y] = entityScanner.nextInt();
+        for (int y = 0; y < entityGrid.length; y++) {
+            for (int x = 0; x < entityGrid[0].length; x++) {
+                entityGrid[y][x] = entityScanner.nextInt();
             }
         }
         gridScanner.close();

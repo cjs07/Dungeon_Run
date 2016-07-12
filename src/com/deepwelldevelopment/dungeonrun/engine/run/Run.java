@@ -1,5 +1,6 @@
 package com.deepwelldevelopment.dungeonrun.engine.run;
 
+import com.deepwelldevelopment.dungeonrun.engine.DungeonRun;
 import com.deepwelldevelopment.dungeonrun.engine.characters.Character;
 import com.deepwelldevelopment.dungeonrun.engine.game.Floor;
 import com.deepwelldevelopment.dungeonrun.engine.game.Room;
@@ -9,7 +10,6 @@ import com.deepwelldevelopment.dungeonrun.engine.game.item.Item;
 import com.deepwelldevelopment.dungeonrun.engine.physics.Hitbox;
 import com.deepwelldevelopment.dungeonrun.engine.prefab.Prefab;
 import com.deepwelldevelopment.dungeonrun.engine.prefab.PrefabLoader;
-import com.deepwelldevelopment.dungeonrun.gui.GamePanel;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -58,8 +58,8 @@ public class Run {
 
         instance = this;
 
-        int x = GamePanel.width/2;
-        int y = GamePanel.height/2;
+        int x = DungeonRun.library.getScreenWidth()/2;
+        int y = DungeonRun.library.getScreenHeight()/2;
         player = new EntityPlayer(0, hp, new Hitbox(x, y, 64, 64), x, y);
         items = new ArrayList<>();
     }

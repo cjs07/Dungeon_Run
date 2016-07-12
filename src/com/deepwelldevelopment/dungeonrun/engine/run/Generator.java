@@ -89,11 +89,11 @@ public class Generator {
         }
         validate();
 
-        for (int[] aLayout : layout) {
-            for (int y = 0; y < layout[0].length; y++) {
-                if (aLayout[y] != 0) {
-                    System.out.print(aLayout[y] + "    ");
-                }
+        for (int x = 0; x < layout[0].length; x++) {
+            for (int y = 0; y < layout.length; y++) {
+                //if (aLayout[y] != 0) {
+                    System.out.print(layout[y][x] + "    ");
+                //}
             }
             System.out.print("\n");
         }
@@ -105,8 +105,8 @@ public class Generator {
         for (int x = 0; x < prefabLayout.length; x++) {
             for (int y = 0; y < prefabLayout[0].length; y++) {
                 if (layout[x][y] == 1 || layout[x][y] == 2) {
-                    int selctionIndex = rng.nextInt(availablePrefabs.size());
-                    prefabLayout[x][y] = availablePrefabs.get(selctionIndex);
+                    int selectionIndex = rng.nextInt(availablePrefabs.size());
+                    prefabLayout[x][y] = availablePrefabs.get(selectionIndex);
                 }
             }
         }

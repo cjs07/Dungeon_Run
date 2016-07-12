@@ -13,9 +13,6 @@ import java.util.Random;
 
 public class GamePanel extends JPanel implements KeyListener, Runnable{
 
-    public static int width;
-    public static int height;
-
     public boolean isActive;
 
     boolean paused;
@@ -32,8 +29,6 @@ public class GamePanel extends JPanel implements KeyListener, Runnable{
     public GamePanel(GameFrame frame) {
         this.frame = frame;
         run = null;
-        width = getWidth();
-        height = getHeight();
         fullHeart = new ImageIcon("res/fullheart.png").getImage();
         halfHeart = new ImageIcon("res/halfheart.png").getImage();
     }
@@ -48,8 +43,6 @@ public class GamePanel extends JPanel implements KeyListener, Runnable{
         new Thread(this).start();
 
         Collections.shuffle(Item.items, new Random(run.getGenerator().generateRandomSeed()));
-
-        System.out.println("" + width + height);
     }
 
     @Override

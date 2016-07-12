@@ -1,10 +1,13 @@
 package com.deepwelldevelopment.dungeonrun.engine.game;
 
+import com.deepwelldevelopment.dungeonrun.engine.DungeonRun;
 import com.deepwelldevelopment.dungeonrun.engine.game.entity.Entity;
+import com.deepwelldevelopment.dungeonrun.engine.game.entity.EntityDoor;
 import com.deepwelldevelopment.dungeonrun.engine.game.entity.damagable.EntityDamageable;
 import com.deepwelldevelopment.dungeonrun.engine.game.entity.damagable.movable.EntityPlayer;
 import com.deepwelldevelopment.dungeonrun.engine.game.entity.damagable.movable.enemy.EnemySpider;
 import com.deepwelldevelopment.dungeonrun.engine.game.entity.damagable.movable.enemy.EntityEnemy;
+import com.deepwelldevelopment.dungeonrun.engine.game.entity.item.EntityItem;
 import com.deepwelldevelopment.dungeonrun.engine.game.entity.item.EntityItemPedestal;
 import com.deepwelldevelopment.dungeonrun.engine.game.entity.projectile.EntityProjectile;
 import com.deepwelldevelopment.dungeonrun.engine.game.item.Item;
@@ -25,6 +28,8 @@ public class Room {
     EntityPlayer player;
     PhysicsManager physicsManager;
 
+    boolean clear;
+
     private boolean showHitboxes = true;
 
     public Room(Image display, int[][] grid, int[][] entityGrid) {
@@ -34,12 +39,13 @@ public class Room {
         entities = new ArrayList<>();
         player = Run.instance.getPlayer();
         physicsManager = new PhysicsManager(this);
+        clear = false;
 
-        for (int x = 0; x < entityGrid.length; x++) {
-            for (int y = 0; y < entityGrid[0].length; y++) {
-                int value = entityGrid[x][y];
+        for (int x = 0; x < entityGrid[0].length; x++) {
+            for (int y = 0; y < entityGrid.length; y++) {
+                int value = entityGrid[y][x];
                 if (value != -1) {
-                    int id = ((EntityEnemy) (Entity.gameEntities.get(entityGrid[x][y]))).getEnemyId();
+                    int id = ((EntityEnemy) (Entity.gameEntities.get(entityGrid[y][x]))).getEnemyId();
                     Entity toAdd;
                     switch (id) {
                         case EntityEnemy.SPIDER_ID:
@@ -49,7 +55,7 @@ public class Room {
                             toAdd = new EnemySpider();
                             break;
                     }
-                    toAdd.setX(x * (display.getWidth(null) / entityGrid.length)).setY(y * (display.getHeight(null) / entityGrid[0].length));
+                    toAdd.setX(x * (display.getWidth(null) / entityGrid[0].length)).setY(y * (display.getHeight(null) / entityGrid.length));
                     entities.add(toAdd);
                 }
             }
@@ -59,8 +65,8 @@ public class Room {
     }
 
     public void draw(JPanel source, Graphics g) {
-        int blankSpaceX = source.getWidth() - display.getWidth(null);
-        int blankSpaceY = source.getHeight() - display.getHeight(null);
+        int blankSpaceX = DungeonRun.library.getScreenWidth() - display.getWidth(null);
+        int blankSpaceY = DungeonRun.library.getScreenHeight() - display.getHeight(null);
         int offsetX = blankSpaceX/2;
         int offsetY = blankSpaceY/2;
         g.drawImage(display, offsetX, offsetY, null);
@@ -80,6 +86,16 @@ public class Room {
                 } else if (e instanceof EntityProjectile) {
                     EntityProjectile ep = (EntityProjectile)e;
                     Rectangle r = ep.getHitbox().toRect();
+                    g.setColor(Color.RED);
+                    g.drawRect((int) r.getX(), (int) r.getY(), (int) r.getWidth(), (int) r.getHeight());
+                } else if (e instanceof EntityItemPedestal) {
+                    EntityItemPedestal eip = ((EntityItemPedestal) e);
+                    Rectangle r = eip.getHitbox().toRect();
+                    g.setColor(Color.RED);
+                    g.drawRect((int) r.getX(), (int) r.getY(), (int) r.getWidth(), (int) r.getHeight());
+                } else if (e instanceof EntityDoor) {
+                    EntityDoor ed = ((EntityDoor) e);
+                    Rectangle r = ed.getHitbox().toRect();
                     g.setColor(Color.RED);
                     g.drawRect((int) r.getX(), (int) r.getY(), (int) r.getWidth(), (int) r.getHeight());
                 }
@@ -116,10 +132,52 @@ public class Room {
         player.update();
         physicsManager.tick(entities);
         entities = postUpdate;
+        for (Entity e : entities) {
+            if (e instanceof EntityEnemy) {
+                return;
+            }
+        }
+        if (!clear) {
+            clear();
+        }
     }
 
     public void addEntity(Entity entity) {
         entities.add(entity);
+    }
+
+    public void initializeDoors() {
+        int blankSpaceX = DungeonRun.library.getScreenWidth() - display.getWidth(null);
+        int blankSpaceY = DungeonRun.library.getScreenHeight() - display.getHeight(null);
+        int offsetX = blankSpaceX/2;
+        int offsetY = blankSpaceY/2;
+        int displayWidth = display.getWidth(null);
+        int displayHeight = display.getHeight(null);
+        for (Entity e : entities) {
+            if (e instanceof EntityDoor) {
+                EntityDoor entityDoor = (EntityDoor) e;
+                switch (entityDoor.getDirection()) {
+                    case Floor.LEFT:
+                        entityDoor.setX(offsetX-entityDoor.getImage().getWidth(null));
+                        entityDoor.setY(offsetY+(displayHeight/2)-(entityDoor.getImage().getHeight(null)/2));
+                        break;
+                    case Floor.UP:
+                        entityDoor.setX(offsetX+(displayWidth/2)-(entityDoor.getImage().getWidth(null)/2));
+                        entityDoor.setY(offsetY-entityDoor.getImage().getHeight(null));
+                        break;
+                    case Floor.RIGHT:
+                        entityDoor.setX(offsetX+displayWidth);
+                        entityDoor.setY(offsetY+(displayHeight/2)-(entityDoor.getImage().getHeight(null)/2));
+                        break;
+                    case Floor.DOWN:
+                        entityDoor.setX(offsetX+(displayWidth/2)-(entityDoor.getImage().getWidth(null)/2));
+                        entityDoor.setY(offsetY+displayHeight);
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
     }
 
     public void playerEnter() {
@@ -127,7 +185,52 @@ public class Room {
     }
 
     public void playerExit() {
+        for (Entity e : entities) {
+            if (e instanceof EntityEnemy) {
+                reinitialize();
+                return;
+            }
+        }
+    }
 
+    public void clear() {
+        System.out.println("room cleared. opening doors");
+        clear = true;
+        for (Entity e : entities) {
+            if (e instanceof EntityDoor) {
+                ((EntityDoor) e).open();
+            }
+        }
+    }
+
+    public void reinitialize() {
+        ArrayList<Entity> nonEnemies = new ArrayList<>();
+        for (Entity e : entities) {
+            if (e instanceof EntityItemPedestal || e instanceof EntityItem || e instanceof EntityDoor) {
+                nonEnemies.add(e);
+            }
+        }
+        entities.clear();
+        entities.addAll(nonEnemies);
+        for (int x = 0; x < entityGrid[0].length; x++) {
+            for (int y = 0; y < entityGrid.length; y++) {
+                int value = entityGrid[y][x];
+                if (value != -1) {
+                    int id = ((EntityEnemy) (Entity.gameEntities.get(entityGrid[x][y]))).getEnemyId();
+                    Entity toAdd;
+                    switch (id) {
+                        case EntityEnemy.SPIDER_ID:
+                            toAdd = new EnemySpider();
+                            break;
+                        default:
+                            toAdd = new EnemySpider();
+                            break;
+                    }
+                    toAdd.setX(x * (display.getWidth(null) / entityGrid[0].length)).setY(y * (display.getHeight(null) / entityGrid.length));
+                    entities.add(toAdd);
+                }
+            }
+        }
     }
 
     public void destroy() {
