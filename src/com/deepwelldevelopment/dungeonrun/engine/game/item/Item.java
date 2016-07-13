@@ -2,6 +2,7 @@ package com.deepwelldevelopment.dungeonrun.engine.game.item;
 
 import com.deepwelldevelopment.dungeonrun.engine.game.entity.projectile.EntityProjectile;
 import com.deepwelldevelopment.dungeonrun.engine.run.Run;
+import com.deepwelldevelopment.dungeonrun.gui.GamePanel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -113,6 +114,7 @@ public class Item {
     }
 
     public void onPickup() {
+        GamePanel.instance.itemPickup(this);
         Run r = Run.instance;
         r.setHp(r.getHp()+hpMod);
         r.setDamage(r.getDamage()+damageMod);

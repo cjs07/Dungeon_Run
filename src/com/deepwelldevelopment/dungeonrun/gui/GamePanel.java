@@ -13,6 +13,8 @@ import java.util.Random;
 
 public class GamePanel extends JPanel implements KeyListener, Runnable{
 
+    public static GamePanel instance;
+
     public boolean isActive;
 
     boolean paused;
@@ -26,11 +28,16 @@ public class GamePanel extends JPanel implements KeyListener, Runnable{
     int framesSinceShot;
     boolean canFire;
 
+    boolean itemPickup;
+    Item pickup;
+    int pickupFrames;
+
     public GamePanel(GameFrame frame) {
         this.frame = frame;
         run = null;
         fullHeart = new ImageIcon("res/fullheart.png").getImage();
         halfHeart = new ImageIcon("res/halfheart.png").getImage();
+        instance = this;
     }
 
     public void startRun(Run run) {
@@ -43,6 +50,12 @@ public class GamePanel extends JPanel implements KeyListener, Runnable{
         new Thread(this).start();
 
         Collections.shuffle(Item.items, new Random(run.getGenerator().generateRandomSeed()));
+    }
+
+    public void itemPickup(Item item) {
+        itemPickup = true;
+        pickup = item;
+        pickupFrames = 0;
     }
 
     @Override
@@ -66,6 +79,19 @@ public class GamePanel extends JPanel implements KeyListener, Runnable{
         }
 
         run.getCurrentFloor().getCurrentRoom().draw(this, g);
+
+        if (itemPickup) {
+            String itemName = pickup.getName();
+            String pickupQuote = pickup.getPickupQuote();
+            FontMetrics fm = getFontMetrics(getFont());
+            g.drawString(itemName, (getWidth()/2-(fm.stringWidth(itemName)/2)), getHeight()/2);
+            pickupFrames++;
+            if (pickupFrames > 60) {
+                itemPickup = false;
+                pickup = null;
+                pickupFrames = 0;
+            }
+        }
     }
 
     @Override

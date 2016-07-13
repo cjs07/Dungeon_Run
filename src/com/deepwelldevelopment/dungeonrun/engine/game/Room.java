@@ -4,6 +4,7 @@ import com.deepwelldevelopment.dungeonrun.engine.DungeonRun;
 import com.deepwelldevelopment.dungeonrun.engine.game.entity.Entity;
 import com.deepwelldevelopment.dungeonrun.engine.game.entity.EntityDoor;
 import com.deepwelldevelopment.dungeonrun.engine.game.entity.damagable.EntityDamageable;
+import com.deepwelldevelopment.dungeonrun.engine.game.entity.damagable.movable.EntityMovable;
 import com.deepwelldevelopment.dungeonrun.engine.game.entity.damagable.movable.EntityPlayer;
 import com.deepwelldevelopment.dungeonrun.engine.game.entity.damagable.movable.enemy.EnemySpider;
 import com.deepwelldevelopment.dungeonrun.engine.game.entity.damagable.movable.enemy.EntityEnemy;
@@ -41,6 +42,10 @@ public class Room {
         physicsManager = new PhysicsManager(this);
         clear = false;
 
+        int blankSpaceX = DungeonRun.library.getScreenWidth() - display.getWidth(null);
+        int blankSpaceY = DungeonRun.library.getScreenHeight() - display.getHeight(null);
+        int offsetX = blankSpaceX/2;
+        int offsetY = blankSpaceY/2;
         for (int x = 0; x < entityGrid[0].length; x++) {
             for (int y = 0; y < entityGrid.length; y++) {
                 int value = entityGrid[y][x];
@@ -55,7 +60,10 @@ public class Room {
                             toAdd = new EnemySpider();
                             break;
                     }
-                    toAdd.setX(x * (display.getWidth(null) / entityGrid[0].length)).setY(y * (display.getHeight(null) / entityGrid.length));
+                    toAdd.setX((x * (display.getWidth(null) / entityGrid[0].length) + offsetX)).setY((y * (display.getHeight(null) / entityGrid.length)) + offsetY);
+                    if (toAdd instanceof EntityEnemy) {
+                        ((EntityEnemy)toAdd).registerAis();
+                    }
                     entities.add(toAdd);
                 }
             }
@@ -120,6 +128,10 @@ public class Room {
     }
 
     public synchronized void update() {
+        int blankSpaceX = DungeonRun.library.getScreenWidth() - display.getWidth(null);
+        int blankSpaceY = DungeonRun.library.getScreenHeight() - display.getHeight(null);
+        int offsetX = blankSpaceX/2;
+        int offsetY = blankSpaceY/2;
         player = Run.instance.getPlayer();
         ArrayList postUpdate = (ArrayList) entities.clone();
         for (Entity e : entities) {
@@ -127,9 +139,35 @@ public class Room {
                 postUpdate.remove(e);
             } else {
                 e.update();
+                if (e.getX() < offsetX || e.getX()+e.getImage().getWidth(null) > offsetX+display.getWidth(null)) {
+                    if (e instanceof EntityProjectile) {
+                        e.destroy();
+                    } else if (e instanceof EntityMovable) {
+                        EntityMovable entityMovable = ((EntityMovable) e);
+                        entityMovable.setDx(0);
+                        entityMovable.setX(e.getX() < offsetX ? offsetX : offsetX+display.getWidth(null)-player.getImage().getWidth(null));
+                    }
+                }
+                if (e.getY() < offsetY || e.getY()+e.getImage().getHeight(null) > offsetY + display.getHeight(null)) {
+                    if (e instanceof EntityProjectile) {
+                        e.destroy();
+                    } else if (e instanceof EntityMovable) {
+                        EntityMovable entityMovable = ((EntityMovable) e);
+                        entityMovable.setDy(0);
+                        entityMovable.setY(e.getY() < offsetY ? offsetY : offsetY+display.getHeight(null)-player.getImage().getHeight(null));
+                    }
+                }
             }
         }
         player.update();
+        if (player.getX() < offsetX || player.getX()+player.getImage().getWidth(null) > offsetX+display.getWidth(null)) {
+            player.setDx(0);
+            player.setX(player.getX() < offsetX ? offsetX : offsetX+display.getWidth(null)-player.getImage().getWidth(null));
+        }
+        if (player.getY() < offsetY || player.getY()+player.getImage().getHeight(null) > offsetY + display.getHeight(null)) {
+            player.setDy(0);
+            player.setY(player.getY() < offsetY ? offsetY : offsetY+display.getHeight(null)-player.getImage().getHeight(null));
+        }
         physicsManager.tick(entities);
         entities = postUpdate;
         for (Entity e : entities) {
