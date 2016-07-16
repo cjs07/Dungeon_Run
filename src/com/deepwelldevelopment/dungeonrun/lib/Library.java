@@ -2,6 +2,8 @@ package com.deepwelldevelopment.dungeonrun.lib;
 
 public class Library {
 
+    final int wallOffset = 6;
+
     int screenWidth;
     int screenHeight;
     int doorOffset;
@@ -28,5 +30,9 @@ public class Library {
 
     public void setDoorOffset(int doorOffset) {
         this.doorOffset = doorOffset;
+    }
+
+    public int getWallOffset() {
+        return wallOffset;
     }
 }

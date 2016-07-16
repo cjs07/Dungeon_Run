@@ -14,6 +14,9 @@ public class Entity {
     int id;
     boolean destroy;
 
+    int centerX;
+    int centerY;
+
     public Entity(int id, Image image, int x, int y) {
         this.id = id;
         this.image = image;
@@ -57,6 +60,7 @@ public class Entity {
 
     public Entity setX(int x) {
         this.x = x;
+        centerX = x + (image.getWidth(null)/2);
         return this;
     }
 
@@ -66,6 +70,7 @@ public class Entity {
 
     public Entity setY(int y) {
         this.y = y;
+        centerY = y + (image.getHeight(null)/2);
         return this;
     }
 
@@ -75,5 +80,13 @@ public class Entity {
 
     public boolean destroyed() {
         return destroy;
+    }
+
+    public int getCenterX() {
+        return centerX;
+    }
+
+    public int getCenterY() {
+        return centerY;
     }
 }

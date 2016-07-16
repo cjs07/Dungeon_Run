@@ -66,7 +66,7 @@ public class GamePanel extends JPanel implements KeyListener, Runnable{
 
         g.clearRect(0, 0, getWidth(), getHeight());
 
-        g.setColor(Color.WHITE);
+        g.setColor(Color.BLACK);
         g.fillRect(0, 0, getWidth(), getHeight());
 
         if (run.getHp() % 2 == 0) {
