@@ -4,6 +4,7 @@ public class Library {
 
     int screenWidth;
     int screenHeight;
+    int doorOffset;
 
     public int getScreenWidth() {
         return screenWidth;
@@ -19,5 +20,13 @@ public class Library {
 
     public void setScreenHeight(int screenHeight) {
         this.screenHeight = screenHeight;
+    }
+
+    public int getDoorOffset() {
+        return doorOffset;
+    }
+
+    public void setDoorOffset(int doorOffset) {
+        this.doorOffset = doorOffset;
     }
 }

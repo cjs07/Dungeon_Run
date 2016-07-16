@@ -99,7 +99,9 @@ public class Floor {
             default:
                 break;
         }
+        currentRoom.playerExit();
         currentRoom = layout[currentY+dy][currentX+dx];
+        currentRoom.playerEnter(direction == LEFT  ? RIGHT : direction == UP ? DOWN : direction == RIGHT ? LEFT : UP);
         currentX += dx;
         currentY += dy;
         System.out.println("room moved");

@@ -1,5 +1,6 @@
 package com.deepwelldevelopment.dungeonrun.gui;
 
+import com.deepwelldevelopment.dungeonrun.engine.DungeonRun;
 import com.deepwelldevelopment.dungeonrun.engine.characters.Character;
 import com.deepwelldevelopment.dungeonrun.engine.game.item.Item;
 import com.deepwelldevelopment.dungeonrun.engine.run.Run;
@@ -44,6 +45,7 @@ public class GamePanel extends JPanel implements KeyListener, Runnable{
         this.run = run;
         Character c = this.run.character;
         System.out.print(c.id + c.name + c.hp + c.damage + c.fireDelay + c.fireRate + c.accuracy + c.speed + c.range + c.luck);
+        DungeonRun.library.setDoorOffset(run.getPlayer().getImage().getWidth(null));
         run.generate();
         paused = false;
         canFire = true;
@@ -83,10 +85,15 @@ public class GamePanel extends JPanel implements KeyListener, Runnable{
         if (itemPickup) {
             String itemName = pickup.getName();
             String pickupQuote = pickup.getPickupQuote();
+            setFont(new Font("Times New Roman", Font.BOLD, 36));
+            g.setColor(Color.WHITE);
             FontMetrics fm = getFontMetrics(getFont());
-            g.drawString(itemName, (getWidth()/2-(fm.stringWidth(itemName)/2)), getHeight()/2);
+            g.drawString(itemName, ((getWidth()/2)-(fm.stringWidth(itemName)/2)), (getHeight()/2)-(getFont().getSize()/2));
+            setFont(new Font("Times New Roman", Font.PLAIN, 24));
+            //fm = getFontMetrics(getFont());
+            g.drawString(pickupQuote, ((getWidth()/2)-(fm.stringWidth(pickupQuote)/2)), (getHeight()/2)+(getFont().getSize()/2));
             pickupFrames++;
-            if (pickupFrames > 60) {
+            if (pickupFrames > 240) {
                 itemPickup = false;
                 pickup = null;
                 pickupFrames = 0;

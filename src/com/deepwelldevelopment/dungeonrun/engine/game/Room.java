@@ -11,8 +11,6 @@ import com.deepwelldevelopment.dungeonrun.engine.game.entity.damagable.movable.e
 import com.deepwelldevelopment.dungeonrun.engine.game.entity.item.EntityItem;
 import com.deepwelldevelopment.dungeonrun.engine.game.entity.item.EntityItemPedestal;
 import com.deepwelldevelopment.dungeonrun.engine.game.entity.projectile.EntityProjectile;
-import com.deepwelldevelopment.dungeonrun.engine.game.item.Item;
-import com.deepwelldevelopment.dungeonrun.engine.physics.Hitbox;
 import com.deepwelldevelopment.dungeonrun.engine.physics.PhysicsManager;
 import com.deepwelldevelopment.dungeonrun.engine.run.Run;
 
@@ -68,8 +66,6 @@ public class Room {
                 }
             }
         }
-
-        entities.add(new EntityItemPedestal(Item.items.get(0), new Hitbox(0, 0, 64, 64)).setX(500).setY(300));
     }
 
     public void draw(JPanel source, Graphics g) {
@@ -196,20 +192,20 @@ public class Room {
                 EntityDoor entityDoor = (EntityDoor) e;
                 switch (entityDoor.getDirection()) {
                     case Floor.LEFT:
-                        entityDoor.setX(offsetX-entityDoor.getImage().getWidth(null));
+                        entityDoor.setX(offsetX-entityDoor.getImage().getWidth(null)+DungeonRun.library.getDoorOffset());
                         entityDoor.setY(offsetY+(displayHeight/2)-(entityDoor.getImage().getHeight(null)/2));
                         break;
                     case Floor.UP:
                         entityDoor.setX(offsetX+(displayWidth/2)-(entityDoor.getImage().getWidth(null)/2));
-                        entityDoor.setY(offsetY-entityDoor.getImage().getHeight(null));
+                        entityDoor.setY(offsetY-entityDoor.getImage().getHeight(null)+DungeonRun.library.getDoorOffset());
                         break;
                     case Floor.RIGHT:
-                        entityDoor.setX(offsetX+displayWidth);
+                        entityDoor.setX(offsetX+displayWidth-DungeonRun.library.getDoorOffset());
                         entityDoor.setY(offsetY+(displayHeight/2)-(entityDoor.getImage().getHeight(null)/2));
                         break;
                     case Floor.DOWN:
                         entityDoor.setX(offsetX+(displayWidth/2)-(entityDoor.getImage().getWidth(null)/2));
-                        entityDoor.setY(offsetY+displayHeight);
+                        entityDoor.setY(offsetY+displayHeight-DungeonRun.library.getDoorOffset());
                         break;
                     default:
                         break;
@@ -218,7 +214,29 @@ public class Room {
         }
     }
 
-    public void playerEnter() {
+    public void playerEnter(int fromDirection) {
+        int blankSpaceX = DungeonRun.library.getScreenWidth() - display.getWidth(null);
+        int blankSpaceY = DungeonRun.library.getScreenHeight() - display.getHeight(null);
+        int offsetX = blankSpaceX/2;
+        int offsetY = blankSpaceY/2;
+        int displayWidth = display.getWidth(null);
+        int displayHeight = display.getHeight(null);
+        switch (fromDirection) {
+            case Floor.LEFT:
+                player.setX(offsetX + DungeonRun.library.getDoorOffset());
+                break;
+            case Floor.UP:
+                player.setY(offsetY + DungeonRun.library.getDoorOffset());
+                break;
+            case Floor.RIGHT:
+                player.setX(offsetX + displayWidth - DungeonRun.library.getDoorOffset() - player.getImage().getWidth(null));
+                break;
+            case Floor.DOWN:
+                player.setY(offsetY + displayHeight - DungeonRun.library.getDoorOffset() - player.getImage().getHeight(null));
+                break;
+            default:
+                break;
+        }
 
     }
 
