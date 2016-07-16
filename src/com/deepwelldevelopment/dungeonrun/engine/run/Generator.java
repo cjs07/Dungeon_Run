@@ -11,18 +11,16 @@ import java.util.Scanner;
 
 public class Generator {
 
+    public static final int NON_ROOM = 0;
+    public static final int NORMAL_ROOM = 1;
+    public static final int SPAWN_ROOM = 2;
+    public static final int ITEM_ROOM = 3;
+    public static final int BOSS_ROOM = 4;
+    public static final int FLOOR_BOSS_ROOM = 5;
 
     Random rng;
     private int[][] layout;
     private Prefab[][] prefabLayout;
-    private int minRooms;
-    private int maxRooms;
-    private int maxSubbranches;
-    private int maxBranchesPerRoom;
-    private int maxRoomsPerBranch;
-    private int subbranches;
-    private int totalRooms;
-    private int totalBranches;
 
     public Generator(Random rng) {
         this.rng = rng;
@@ -42,8 +40,8 @@ public class Generator {
 
     private int[][] generateFloor(File restrictions) {
         for (int x = 0; x < layout.length; x++) {
-            for (int y = 0; y < layout[0].length; y++) {
-                layout[x][y] = 0;
+            for (int y = 0; y < layout.length; y++) {
+                layout[x][y] = NON_ROOM;
             }
         }
         Scanner scanner;
@@ -54,46 +52,23 @@ public class Generator {
             scanner = new Scanner("res/generation/defaults.drg");
         }
 
-        minRooms = scanner.nextInt();
-        maxRooms = scanner.nextInt();
-        maxSubbranches = scanner.nextInt();
-        maxBranchesPerRoom = scanner.nextInt();
-        maxRoomsPerBranch = scanner.nextInt();
+        int spawnX = (int) Math.floor(layout.length / 2);
+        int spawnY = (int) Math.floor(layout.length / 2);
 
-        for (int x = 0; x < layout.length; x++) {
-            for (int y = 0; y < layout.length; y++) {
-                layout[x][y] = 0;
-            }
-        }
+        layout[spawnY][spawnX] = SPAWN_ROOM;
+        layout[spawnY - 1][spawnX] = FLOOR_BOSS_ROOM;
 
-        layout[(int)Math.floor(layout.length/2)][(int)Math.floor(layout[0].length/2)] = 2;
+        generateBranch(spawnX, spawnY, 0, rng.nextInt(3) + 5);
+        generateBranch(spawnX, spawnY, 2, rng.nextInt(3) + 5);
+        generateBranch(spawnX, spawnY, 3, rng.nextInt(3) + 5);
 
-        int mainBranches = rng.nextInt(4)+1;
-        int branch1 = rng.nextInt(4);
-        int branch2 = rng.nextInt(4);
-        int branch3 = rng.nextInt(4);
-        int branch4 = rng.nextInt(4);
+        addSpecialRooms(3, 3);
 
-        totalBranches += mainBranches;
-        totalRooms += 1;
-        for (int i = 0; i < mainBranches; i++) {
-            if (i==0) {
-                generateBranch((int)Math.ceil(layout.length/2), (int)Math.ceil(layout[0].length/2), branch1, false);
-            } else if (i==1) {
-                generateBranch((int)Math.ceil(layout.length/2), (int)Math.ceil(layout[0].length/2), branch2, false);
-            } else if (i==2) {
-                generateBranch((int)Math.ceil(layout.length/2), (int)Math.ceil(layout[0].length/2), branch3, false);
-            } else if (i==3) {
-                generateBranch((int)Math.ceil(layout.length/2), (int)Math.ceil(layout[0].length/2), branch4, false);
-            }
-        }
         validate();
 
-        for (int x = 0; x < layout[0].length; x++) {
-            for (int y = 0; y < layout.length; y++) {
-                //if (aLayout[y] != 0) {
-                    System.out.print(layout[y][x] + "    ");
-                //}
+        for (int y = 0; y < layout.length; y++) {
+            for (int x = 0; x < layout[0].length; x++) {
+                System.out.print(layout[y][x] + "    ");
             }
             System.out.print("\n");
         }
@@ -113,7 +88,7 @@ public class Generator {
         return prefabLayout;
     }
 
-    private void generateBranch(int x, int y, int side, boolean canZero) {
+    private void generateBranch(int x, int y, int side, int rooms) {
         int currentX, currentY, xOffset, yOffset;
         switch (side) {
             case 0:
@@ -144,83 +119,124 @@ public class Generator {
                 return;
         }
 
-        int rooms = rng.nextInt(maxRoomsPerBranch);
-        if (rooms == 0 && !canZero) {
-            rooms++;
-        }
-        if ((totalRooms + rooms) > maxRooms) {
-            return;
-        }
-        totalRooms += rooms;
         for (int i = 0; i < rooms; i++) {
-            if (currentX < 0 || currentX >= layout.length ||  currentY < 0 || currentY >= layout[0].length) {
-                return;
-            }
-            if (layout[currentX][currentY] == 2) {
-                return;
-            }
-            layout[currentX][currentY] = 1;
-            currentX += xOffset;
-            currentY += yOffset;
-
-            //generate more branches
-            int branches = rng.nextInt(maxBranchesPerRoom*3);
-            if (branches <= 2) {
-                branches = 0;
-            } else if (branches > 2 && branches <= 5) {
-                branches = 1;
-            } else if(branches > 5 && branches <= 8) {
-                branches = 2;
-            } else if (branches > 8 && branches <= 10 ) {
-                branches = 3;
-            } else if (branches == 11) {
-                branches = 4;
-            } else if (branches == 12) {
-                branches = 0;
-            } else {
-                branches = 0;
-            }
-
-            for (int j = 0; j < branches; j++) {
-                if (subbranches >= maxSubbranches){
-                    subbranches = 0;
-                    return;
-                } else {
-                    subbranches++;
-                    generateBranch(currentX, currentY, rng.nextInt(4), true);
+            int newY = currentY + (yOffset * i);
+            int newX = currentX + (xOffset * i);
+            if (newY > 0 && newY < layout.length - 1 && newX > 0 && newX < layout[0].length - 1)
+                if (layout[newY][newX] == 0) {
+                    layout[newY][newX] = NORMAL_ROOM;
                 }
+        }
+
+        for (int i = 2; i < rooms; i++) {
+            int branchCreationIndex = rng.nextInt(16);
+            if (branchCreationIndex < 3) {
+                generateBranch((currentX + (xOffset * i)), (currentY + (yOffset * i)), side + 1 <= 3 ? side + 1 : side + 1 == 4 ? 0 : 0, rooms - 1);
+            }
+            if (branchCreationIndex < 6) {
+                generateBranch((currentX + (xOffset * i)), (currentY + (yOffset * i)), side + 3 <= 3 ? side + 3 : side + 3 == 4 ? 0 : side + 3 == 5 ? 1 : side + 3 == 5 ? 2 : side + 3 == 6 ? 3 : 0, rooms - 1);
             }
         }
     }
 
+    void addSpecialRooms(int bossRooms, int itemRooms) {
+        for (int y = 0; y < layout.length; y++) {
+            for (int x = 0; x < layout.length; x++) {
+                if (layout[y][x] == NORMAL_ROOM) {
+                    if (rng.nextInt(100) < 10) {
+                        int down = layout[y + 1][x];
+                        int right = layout[y][x + 1];
+                        int up = layout[y - 1][x];
+                        int left = layout[y][x - 1];
+                        int generationId = rng.nextInt(2);
+                        if (down == NORMAL_ROOM) {
+                            if (right == NON_ROOM && up == NON_ROOM && left == NON_ROOM) {
+                                switch (generationId) {
+                                    case 0:
+                                        layout[y][x] = ITEM_ROOM;
+                                        itemRooms--;
+                                        break;
+                                    case 1:
+                                        layout[y][x] = BOSS_ROOM;
+                                        bossRooms--;
+                                        break;
+                                    default:
+                                        break;
+                                }
+                            }
+                        } else if (right == NORMAL_ROOM) {
+                            if (down == NON_ROOM && up == NON_ROOM && left == NON_ROOM) {
+                                switch (generationId) {
+                                    case 0:
+                                        layout[y][x] = ITEM_ROOM;
+                                        itemRooms--;
+                                        break;
+                                    case 1:
+                                        layout[y][x] = BOSS_ROOM;
+                                        bossRooms--;
+                                        break;
+                                    default:
+                                        break;
+                                }
+                            }
+                        } else if (up == NORMAL_ROOM) {
+                            if (right == NON_ROOM && down == NON_ROOM && left == NON_ROOM) {
+                                switch (generationId) {
+                                    case 0:
+                                        layout[y][x] = ITEM_ROOM;
+                                        itemRooms--;
+                                        break;
+                                    case 1:
+                                        layout[y][x] = BOSS_ROOM;
+                                        bossRooms--;
+                                        break;
+                                    default:
+                                        break;
+                                }
+                            }
+                        } else if (left == NORMAL_ROOM) {
+                            if (right == NON_ROOM && up == NON_ROOM && down == NON_ROOM) {
+                                switch (generationId) {
+                                    case 0:
+                                        layout[y][x] = ITEM_ROOM;
+                                        itemRooms--;
+                                        break;
+                                    case 1:
+                                        layout[y][x] = BOSS_ROOM;
+                                        bossRooms--;
+                                        break;
+                                    default:
+                                        break;
+                                }
+                            }
+                        }
+                    }
+                }
+                if (bossRooms == 0 && itemRooms == 0) {
+                    return;
+                }
+            }
+        }
+        if (bossRooms != 0 || itemRooms != 0) {
+            addSpecialRooms(bossRooms, itemRooms);
+        }
+    }
+
     private void validate() {
-         if (totalRooms < minRooms) {
-             totalRooms = 0;
-             totalBranches = 0;
-             subbranches = 0;
-             layout[(int) Math.floor(layout.length / 2)][(int) Math.floor(layout[0].length / 2)] = 2;
-
-             int mainBranches = rng.nextInt(4) + 1;
-             int branch1 = rng.nextInt(4);
-             int branch2 = rng.nextInt(4);
-             int branch3 = rng.nextInt(4);
-             int branch4 = rng.nextInt(4);
-
-             totalBranches += mainBranches;
-             totalRooms += 1;
-             for (int i = 0; i < mainBranches; i++) {
-                 if (i == 0) {
-                     generateBranch((int) Math.ceil(layout.length / 2), (int) Math.ceil(layout[0].length / 2), branch1, false);
-                 } else if (i == 1) {
-                     generateBranch((int) Math.ceil(layout.length / 2), (int) Math.ceil(layout[0].length / 2), branch2, false);
-                 } else if (i == 2) {
-                     generateBranch((int) Math.ceil(layout.length / 2), (int) Math.ceil(layout[0].length / 2), branch3, false);
-                 } else if (i == 3) {
-                     generateBranch((int) Math.ceil(layout.length / 2), (int) Math.ceil(layout[0].length / 2), branch4, false);
-                 }
-             }
-             validate();
-         }
+        for (int y = 0; y < layout.length; y++) {
+            for (int x = 0; x < layout[0].length; x++) {
+                if (layout[y][x] == FLOOR_BOSS_ROOM) {
+                    layout[y][x + 1] = NON_ROOM;
+                    layout[y - 1][x] = NON_ROOM;
+                    layout[y][x - 1] = NON_ROOM;
+                }
+                if (layout[y][x] != NON_ROOM) {
+                    if (layout[y + 1][x] == NON_ROOM && layout[y][x + 1] == NON_ROOM && layout[y - 1][x] == NON_ROOM && layout[y][x - 1] == NON_ROOM) {
+                        layout[y][x] = NON_ROOM;
+                    }
+                }
+            }
+        }
     }
 
     public long generateRandomSeed() {
