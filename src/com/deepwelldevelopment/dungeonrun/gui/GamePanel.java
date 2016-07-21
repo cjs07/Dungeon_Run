@@ -77,7 +77,7 @@ public class GamePanel extends JPanel implements KeyListener, Runnable{
             for (int i = 0; i < run.getHp()-1; i+=2) {
                 g.drawImage(fullHeart, i*fullHeart.getWidth(null), 10, null);
             }
-            g.drawImage(halfHeart, (((run.getHp()-1)/2)*fullHeart.getWidth(null)) + (2*fullHeart.getWidth(null)), 10, null);
+            g.drawImage(halfHeart, (run.getHp() - 1) * fullHeart.getWidth(null), 10, null);
         }
 
         run.getCurrentFloor().getCurrentRoom().draw(this, g);

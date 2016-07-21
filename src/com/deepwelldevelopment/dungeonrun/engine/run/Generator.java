@@ -1,8 +1,10 @@
 package com.deepwelldevelopment.dungeonrun.engine.run;
 
 import com.deepwelldevelopment.dungeonrun.engine.game.Floor;
+import com.deepwelldevelopment.dungeonrun.engine.prefab.ItemRoomPrefab;
 import com.deepwelldevelopment.dungeonrun.engine.prefab.Prefab;
 
+import javax.swing.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -19,6 +21,8 @@ public class Generator {
     public static final int FLOOR_BOSS_ROOM = 5;
 
     Random rng;
+    int bossRooms;
+    int itemRooms;
     private int[][] layout;
     private Prefab[][] prefabLayout;
 
@@ -62,7 +66,21 @@ public class Generator {
         generateBranch(spawnX, spawnY, 2, rng.nextInt(3) + 5);
         generateBranch(spawnX, spawnY, 3, rng.nextInt(3) + 5);
 
-        addSpecialRooms(3, 3);
+        System.out.println();
+        for (int y = 0; y < layout.length; y++) {
+            for (int x = 0; x < layout[0].length; x++) {
+                System.out.print(layout[y][x] + "    ");
+            }
+            System.out.print("\n");
+        }
+
+        bossRooms = 3;
+        itemRooms = 3;
+        try {
+            addSpecialRooms();
+        } catch (StackOverflowError e) {
+            generateSpecialRooms();
+        }
 
         validate();
 
@@ -77,11 +95,20 @@ public class Generator {
 
     private Prefab[][] generatePrebabLayout(int[][] layout) {
         ArrayList<Prefab> availablePrefabs = Run.instance.getPrefabsForFloor();
-        for (int x = 0; x < prefabLayout.length; x++) {
-            for (int y = 0; y < prefabLayout[0].length; y++) {
-                if (layout[x][y] == 1 || layout[x][y] == 2) {
+        for (int y = 0; y < prefabLayout.length; y++) {
+            for (int x = 0; x < prefabLayout[0].length; x++) {
+                if (layout[y][x] == NORMAL_ROOM || layout[x][y] == SPAWN_ROOM) {
                     int selectionIndex = rng.nextInt(availablePrefabs.size());
-                    prefabLayout[x][y] = availablePrefabs.get(selectionIndex);
+                    prefabLayout[y][x] = availablePrefabs.get(selectionIndex);
+                } else if (layout[y][x] == ITEM_ROOM) {
+                    prefabLayout[y][x] = new ItemRoomPrefab(new ImageIcon("res/prefabs/forest2.png").getImage(), new int[50][50], new int[50][50]);
+
+                } else if (layout[y][x] == BOSS_ROOM) {
+                    int selectionIndex = rng.nextInt(availablePrefabs.size());
+                    prefabLayout[y][x] = availablePrefabs.get(selectionIndex);
+                } else if (layout[y][x] == FLOOR_BOSS_ROOM) {
+                    int selectionIndex = rng.nextInt(availablePrefabs.size());
+                    prefabLayout[y][x] = availablePrefabs.get(selectionIndex);
                 }
             }
         }
@@ -139,9 +166,9 @@ public class Generator {
         }
     }
 
-    void addSpecialRooms(int bossRooms, int itemRooms) {
+    void addSpecialRooms() {
         for (int y = 0; y < layout.length; y++) {
-            for (int x = 0; x < layout.length; x++) {
+            for (int x = 0; x < layout[0].length; x++) {
                 if (layout[y][x] == NORMAL_ROOM) {
                     if (rng.nextInt(100) < 10) {
                         int down = layout[y + 1][x];
@@ -149,6 +176,15 @@ public class Generator {
                         int up = layout[y - 1][x];
                         int left = layout[y][x - 1];
                         int generationId = rng.nextInt(2);
+                        if (generationId == 0 && itemRooms == 0) {
+                            generationId = 1;
+                        }
+                        if (generationId == 1 && bossRooms == 0) {
+                            generationId = 0;
+                        }
+                        if (itemRooms == 0 && bossRooms == 0) {
+                            return;
+                        }
                         if (down == NORMAL_ROOM) {
                             if (right == NON_ROOM && up == NON_ROOM && left == NON_ROOM) {
                                 switch (generationId) {
@@ -217,8 +253,114 @@ public class Generator {
                 }
             }
         }
-        if (bossRooms != 0 || itemRooms != 0) {
-            addSpecialRooms(bossRooms, itemRooms);
+        System.out.println(bossRooms + ", " + itemRooms);
+        if (bossRooms > 0 || itemRooms > 0) {
+            addSpecialRooms();
+        }
+    }
+
+    private void generateSpecialRooms() {
+        for (int y = 0; y < layout.length; y++) {
+            for (int x = 0; x < layout[0].length; x++) {
+                if (layout[y][x] == NON_ROOM) {
+                    if (rng.nextInt(100) < 10) {
+                        int down = -1;
+                        int right = -1;
+                        int up = -1;
+                        int left = -1;
+                        if (y < layout.length - 1) {
+                            down = layout[y + 1][x];
+                        }
+                        if (x < layout[0].length - 1) {
+                            right = layout[y][x + 1];
+                        }
+                        if (y > 0) {
+                            up = layout[y - 1][x];
+                        }
+                        if (x > 0) {
+                            left = layout[y][x - 1];
+                        }
+                        int generationId = rng.nextInt(2);
+                        if (generationId == 0 && itemRooms == 0) {
+                            generationId = 1;
+                        }
+                        if (generationId == 1 && bossRooms == 0) {
+                            generationId = 0;
+                        }
+                        if (itemRooms == 0 && bossRooms == 0) {
+                            return;
+                        }
+                        if (down == NORMAL_ROOM) {
+                            if (right == NON_ROOM && up == NON_ROOM && left == NON_ROOM) {
+                                switch (generationId) {
+                                    case 0:
+                                        layout[y][x] = ITEM_ROOM;
+                                        itemRooms--;
+                                        break;
+                                    case 1:
+                                        layout[y][x] = BOSS_ROOM;
+                                        bossRooms--;
+                                        break;
+                                    default:
+                                        break;
+                                }
+                            }
+                        } else if (right == NORMAL_ROOM) {
+                            if (down == NON_ROOM && up == NON_ROOM && left == NON_ROOM) {
+                                switch (generationId) {
+                                    case 0:
+                                        layout[y][x] = ITEM_ROOM;
+                                        itemRooms--;
+                                        break;
+                                    case 1:
+                                        layout[y][x] = BOSS_ROOM;
+                                        bossRooms--;
+                                        break;
+                                    default:
+                                        break;
+                                }
+                            }
+                        } else if (up == NORMAL_ROOM) {
+                            if (right == NON_ROOM && down == NON_ROOM && left == NON_ROOM) {
+                                switch (generationId) {
+                                    case 0:
+                                        layout[y][x] = ITEM_ROOM;
+                                        itemRooms--;
+                                        break;
+                                    case 1:
+                                        layout[y][x] = BOSS_ROOM;
+                                        bossRooms--;
+                                        break;
+                                    default:
+                                        break;
+                                }
+                            }
+                        } else if (left == NORMAL_ROOM) {
+                            if (right == NON_ROOM && up == NON_ROOM && down == NON_ROOM) {
+                                switch (generationId) {
+                                    case 0:
+                                        layout[y][x] = ITEM_ROOM;
+                                        itemRooms--;
+                                        break;
+                                    case 1:
+                                        layout[y][x] = BOSS_ROOM;
+                                        bossRooms--;
+                                        break;
+                                    default:
+                                        break;
+                                }
+                            }
+                        }
+                    }
+                }
+                if (bossRooms == 0 && itemRooms == 0) {
+                    return;
+                }
+            }
+        }
+        System.out.println(bossRooms + ", " + itemRooms);
+        if (bossRooms > 0 || itemRooms > 0) {
+            generateSpecialRooms();
         }
     }
 

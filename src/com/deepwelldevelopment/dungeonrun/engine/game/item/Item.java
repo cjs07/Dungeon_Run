@@ -15,6 +15,7 @@ import java.util.Scanner;
 public class Item {
 
     public static ArrayList<Item> items;
+    public static Item emergencyItem;
 
     int id;
     String name;
@@ -97,7 +98,6 @@ public class Item {
         }
         if (scanner != null) {
             while (scanner.hasNext()) {
-
                 String[] params = new String[11];
                 for (int i = 0; i < 11; i++) {
                     String next = scanner.nextLine();
@@ -110,6 +110,7 @@ public class Item {
                 new Item(Integer.parseInt(params[0]), params[1], params[2], new ImageIcon(params[3]).getImage(), Integer.parseInt(params[4]), Float.parseFloat(params[5]), Integer.parseInt(params[6]), Float.parseFloat(params[7]), Float.parseFloat(params[8]), Float.parseFloat(params[9]), Float.parseFloat(params[10]));
             }
             scanner.close();
+            emergencyItem = items.get(0);
         }
     }
 

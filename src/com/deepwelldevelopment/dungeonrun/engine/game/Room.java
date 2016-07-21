@@ -16,6 +16,7 @@ import com.deepwelldevelopment.dungeonrun.engine.run.Run;
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import static com.deepwelldevelopment.dungeonrun.engine.DungeonRun.library;
 
@@ -124,49 +125,49 @@ public class Room {
         return entities;
     }
 
-    public synchronized void update() {
+    public void update() {
         int blankSpaceX = library.getScreenWidth() - display.getWidth(null);
         int blankSpaceY = library.getScreenHeight() - display.getHeight(null);
-        int offsetX = blankSpaceX/2;
-        int offsetY = blankSpaceY/2;
+        int offsetX = blankSpaceX / 2;
+        int offsetY = blankSpaceY / 2;
         player = Run.instance.getPlayer();
-        ArrayList postUpdate = (ArrayList) entities.clone();
-        for (Entity e : entities) {
+        //synchronized (entities) {
+        for (Iterator<Entity> iterator = entities.iterator(); iterator.hasNext(); ) {
+            Entity e = iterator.next();
             if (e.destroyed()) {
-                postUpdate.remove(e);
+                iterator.remove();
             } else {
                 e.update();
-                if (e.getX() < offsetX || e.getX()+e.getImage().getWidth(null) > offsetX+display.getWidth(null)) {
+                if (e.getX() < offsetX || e.getX() + e.getImage().getWidth(null) > offsetX + display.getWidth(null)) {
                     if (e instanceof EntityProjectile) {
                         e.destroy();
                     } else if (e instanceof EntityMovable) {
                         EntityMovable entityMovable = ((EntityMovable) e);
                         entityMovable.setDx(0);
-                        entityMovable.setX(e.getX() < offsetX ? offsetX : offsetX+display.getWidth(null)-player.getImage().getWidth(null));
+                        entityMovable.setX(e.getX() < offsetX ? offsetX : offsetX + display.getWidth(null) - player.getImage().getWidth(null));
                     }
-                }
-                if (e.getY() < offsetY || e.getY()+e.getImage().getHeight(null) > offsetY + display.getHeight(null)) {
+                    }
+                if (e.getY() < offsetY || e.getY() + e.getImage().getHeight(null) > offsetY + display.getHeight(null)) {
                     if (e instanceof EntityProjectile) {
                         e.destroy();
                     } else if (e instanceof EntityMovable) {
                         EntityMovable entityMovable = ((EntityMovable) e);
                         entityMovable.setDy(0);
-                        entityMovable.setY(e.getY() < offsetY ? offsetY : offsetY+display.getHeight(null)-player.getImage().getHeight(null));
+                        entityMovable.setY(e.getY() < offsetY ? offsetY : offsetY + display.getHeight(null) - player.getImage().getHeight(null));
+                    }
                     }
                 }
             }
-        }
         player.update();
-        if (player.getX() < offsetX || player.getX()+player.getImage().getWidth(null) > offsetX+display.getWidth(null)) {
+        if (player.getX() < offsetX || player.getX() + player.getImage().getWidth(null) > offsetX + display.getWidth(null)) {
             player.setDx(0);
-            player.setX(player.getX() < offsetX ? offsetX : offsetX+display.getWidth(null)-player.getImage().getWidth(null));
-        }
-        if (player.getY() < offsetY || player.getY()+player.getImage().getHeight(null) > offsetY + display.getHeight(null)) {
+            player.setX(player.getX() < offsetX ? offsetX : offsetX + display.getWidth(null) - player.getImage().getWidth(null));
+            }
+        if (player.getY() < offsetY || player.getY() + player.getImage().getHeight(null) > offsetY + display.getHeight(null)) {
             player.setDy(0);
-            player.setY(player.getY() < offsetY ? offsetY : offsetY+display.getHeight(null)-player.getImage().getHeight(null));
+            player.setY(player.getY() < offsetY ? offsetY : offsetY + display.getHeight(null) - player.getImage().getHeight(null));
         }
-        physicsManager.tick(entities);
-        entities = postUpdate;
+        physicsManager.tick();
         for (Entity e : entities) {
             if (e instanceof EntityEnemy) {
                 return;
@@ -175,6 +176,7 @@ public class Room {
         if (!clear) {
             clear();
         }
+        //}
     }
 
     public void addEntity(Entity entity) {
@@ -238,7 +240,7 @@ public class Room {
             default:
                 break;
         }
-
+        System.out.println("player entered");
     }
 
     public void playerExit() {
@@ -248,6 +250,7 @@ public class Room {
                 return;
             }
         }
+        System.out.println("player exited");
     }
 
     public void clear() {

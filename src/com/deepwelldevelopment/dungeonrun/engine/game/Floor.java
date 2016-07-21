@@ -4,6 +4,7 @@ import com.deepwelldevelopment.dungeonrun.engine.DungeonRun;
 import com.deepwelldevelopment.dungeonrun.engine.game.entity.EntityDoor;
 import com.deepwelldevelopment.dungeonrun.engine.physics.Hitbox;
 import com.deepwelldevelopment.dungeonrun.engine.prefab.Prefab;
+import com.deepwelldevelopment.dungeonrun.engine.run.Generator;
 
 import javax.swing.*;
 
@@ -25,33 +26,33 @@ public class Floor {
 
         System.out.println("" + DungeonRun.library.getScreenWidth() + DungeonRun.library.getScreenHeight());
 
-        for (int x = 0; x < layout[0].length; x++) {
-            for (int y = 0; y < layout.length; y++) {
+        for (int y = 0; y < layout.length; y++) {
+            for (int x = 0; x < layout[0].length; x++) {
                 if (layout[y][x] == 0) {
                     this.layout[y][x] = null;
                 } else {
                     Room toAdd = prefabLayout[y][x].toRoom();
                     if (y > 0) {
-                        if (layout[y - 1][x] == 1 || layout[y - 1][x] == 2) {
-                            toAdd.addEntity(new EntityDoor(new ImageIcon("res/assets/doorleft.png").getImage(), 0, 0, new Hitbox(0, 0, 128, 64), LEFT));
-                        }
-                    }
-
-                    if (x > 0) {
-                        if (layout[y][x - 1] == 1 || layout[y][x - 1] == 2) {
+                        if (layout[y - 1][x] != Generator.NON_ROOM) {
                             toAdd.addEntity(new EntityDoor(new ImageIcon("res/assets/doorup.png").getImage(), 0, 0, new Hitbox(0, 0, 64, 128), UP));
                         }
                     }
 
-                    if (y < layout.length-1) {
-                        if (layout[y + 1][x] == 1 || layout[y + 1][x] == 2) {
-                            toAdd.addEntity(new EntityDoor(new ImageIcon("res/assets/doorright.png").getImage(), 0, 0, new Hitbox(0, 0, 128, 64), RIGHT));
+                    if (x > 0) {
+                        if (layout[y][x - 1] != Generator.NON_ROOM) {
+                            toAdd.addEntity(new EntityDoor(new ImageIcon("res/assets/doorleft.png").getImage(), 0, 0, new Hitbox(0, 0, 128, 64), LEFT));
                         }
                     }
 
-                    if (x < layout[0].length-1) {
-                        if (layout[y][x + 1] == 1 || layout[y][x + 1] == 2) {
+                    if (y < layout.length - 1) {
+                        if (layout[y + 1][x] != Generator.NON_ROOM) {
                             toAdd.addEntity(new EntityDoor(new ImageIcon("res/assets/doordown.png").getImage(), 0, 0, new Hitbox(0, 0, 64, 128), DOWN));
+                        }
+                    }
+
+                    if (x < layout[0].length - 1) {
+                        if (layout[y][x + 1] != Generator.NON_ROOM) {
+                            toAdd.addEntity(new EntityDoor(new ImageIcon("res/assets/doorright.png").getImage(), 0, 0, new Hitbox(0, 0, 128, 64), RIGHT));
                         }
                     }
                     toAdd.initializeDoors();
@@ -59,7 +60,7 @@ public class Floor {
                 }
 
                 if (layout[y][x] == 2) {
-                    currentRoom = this.layout[x][y];
+                    currentRoom = this.layout[y][x];
                     currentX = x;
                     currentY = y;
                 }
@@ -81,20 +82,20 @@ public class Floor {
         int dy = 0;
         switch (direction) {
             case LEFT:
-                dx = 0;
-                dy = -1;
-                break;
-            case UP:
                 dx = -1;
                 dy = 0;
                 break;
-            case RIGHT:
+            case UP:
                 dx = 0;
-                dy = 1;
+                dy = -1;
                 break;
-            case DOWN:
+            case RIGHT:
                 dx = 1;
                 dy = 0;
+                break;
+            case DOWN:
+                dx = 0;
+                dy = 1;
                 break;
             default:
                 break;
