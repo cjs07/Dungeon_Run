@@ -146,7 +146,7 @@ public class Room {
                         entityMovable.setDx(0);
                         entityMovable.setX(e.getX() < offsetX ? offsetX : offsetX + display.getWidth(null) - player.getImage().getWidth(null));
                     }
-                    }
+                }
                 if (e.getY() < offsetY || e.getY() + e.getImage().getHeight(null) > offsetY + display.getHeight(null)) {
                     if (e instanceof EntityProjectile) {
                         e.destroy();
@@ -155,14 +155,14 @@ public class Room {
                         entityMovable.setDy(0);
                         entityMovable.setY(e.getY() < offsetY ? offsetY : offsetY + display.getHeight(null) - player.getImage().getHeight(null));
                     }
-                    }
+                }
                 }
             }
         player.update();
         if (player.getX() < offsetX || player.getX() + player.getImage().getWidth(null) > offsetX + display.getWidth(null)) {
             player.setDx(0);
             player.setX(player.getX() < offsetX ? offsetX : offsetX + display.getWidth(null) - player.getImage().getWidth(null));
-            }
+        }
         if (player.getY() < offsetY || player.getY() + player.getImage().getHeight(null) > offsetY + display.getHeight(null)) {
             player.setDy(0);
             player.setY(player.getY() < offsetY ? offsetY : offsetY + display.getHeight(null) - player.getImage().getHeight(null));
