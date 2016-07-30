@@ -10,6 +10,8 @@ import com.deepwelldevelopment.dungeonrun.engine.game.entity.item.EntityItemPede
 import com.deepwelldevelopment.dungeonrun.engine.game.entity.projectile.EntityProjectile;
 import com.deepwelldevelopment.dungeonrun.engine.run.Run;
 
+import java.util.ArrayList;
+
 public class PhysicsManager {
 
     Room room;
@@ -19,20 +21,22 @@ public class PhysicsManager {
     }
 
     public void tick() {
-        Entity[] entities = (Entity[]) room.getEntities().toArray();
+        ArrayList al = room.getEntities();
+        al.add(Run.instance.getPlayer());
+        Object[] entities = al.toArray();
         synchronized (room.getEntities()) {
-            for (Entity target : entities) {
+            for (Object target : entities) {
                 if (target instanceof EntityDamageable) {
                     EntityDamageable targetDamageable = (EntityDamageable) target;
                     Hitbox targetBox = targetDamageable.getHitbox();
-                    for (Entity source : entities) {
+                    for (Object source : entities) {
                         if (source instanceof EntityProjectile) {
                             EntityProjectile projectileSource = (EntityProjectile) source;
                             if (projectileSource.getSource() != targetDamageable) { //shots are not hitting entity that fired them
                                 Hitbox sourceBox = projectileSource.getHitbox();
                                 if (targetBox.intersects(sourceBox)) {
                                     System.out.println("projectile collision");
-                                    source.destroy();
+                                    projectileSource.destroy();
                                     if (projectileSource.getSource() == Run.instance.getPlayer()) {
                                         targetDamageable.damage(Run.instance.getDamage());
                                     } else {

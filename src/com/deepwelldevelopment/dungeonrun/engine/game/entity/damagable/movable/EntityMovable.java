@@ -1,5 +1,6 @@
 package com.deepwelldevelopment.dungeonrun.engine.game.entity.damagable.movable;
 
+import com.deepwelldevelopment.dungeonrun.engine.game.entity.Entity;
 import com.deepwelldevelopment.dungeonrun.engine.game.entity.damagable.EntityDamageable;
 import com.deepwelldevelopment.dungeonrun.engine.physics.Hitbox;
 
@@ -34,7 +35,7 @@ public class EntityMovable extends EntityDamageable {
 
     /*@Override
     public Entity setX(int x) {
-        //super.setX(x);
+        super.setX(x);
         this.x = x-image.getWidth(null)/2;
         getHitbox().setX(this.x);
         return this;
@@ -42,7 +43,7 @@ public class EntityMovable extends EntityDamageable {
 
     @Override
     public Entity setY(int y) {
-        //super.setY(y);
+        super.setY(y);
         this.y = y-image.getWidth(null)/2;
         getHitbox().setY(this.y);
         return this;
