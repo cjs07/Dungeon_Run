@@ -12,6 +12,11 @@ public class ItemRoomPrefab extends Prefab {
 
     public ItemRoomPrefab(Image visual, int[][] gridData, int[][] entityGrid) {
         super(visual, gridData, entityGrid);
+        for (int y = 0; y < this.entityGrid.length; y++) {
+            for (int x = 0; x < this.entityGrid[0].length; x++) {
+                entityGrid[y][x] = -1;
+            }
+        }
     }
 
     @Override

@@ -1,7 +1,6 @@
 package com.deepwelldevelopment.dungeonrun.engine.physics;
 
 import com.deepwelldevelopment.dungeonrun.engine.game.Room;
-import com.deepwelldevelopment.dungeonrun.engine.game.entity.Entity;
 import com.deepwelldevelopment.dungeonrun.engine.game.entity.EntityDoor;
 import com.deepwelldevelopment.dungeonrun.engine.game.entity.damagable.EntityDamageable;
 import com.deepwelldevelopment.dungeonrun.engine.game.entity.damagable.movable.EntityPlayer;
@@ -21,7 +20,7 @@ public class PhysicsManager {
     }
 
     public void tick() {
-        ArrayList al = room.getEntities();
+        ArrayList al = (ArrayList) room.getEntities().clone();
         al.add(Run.instance.getPlayer());
         Object[] entities = al.toArray();
         synchronized (room.getEntities()) {
