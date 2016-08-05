@@ -19,26 +19,24 @@ public class Run {
     public static Run instance;
 
     public Character character;
-
-    int hp;
-    float damage;
-    int fireDelay;
-    float fireRate;
-    float accuracy;
-    float speed;
-    float range;
-    float luck;
-    Generator generator;
-    PrefabLoader prefabLoader;
-    ArrayList<Prefab> prefabsForFloor;
     int floorTo = 1;
+    private int hp;
+    private float damage;
+    private int fireDelay;
+    private float fireRate;
+    private float accuracy;
+    private float speed;
+    private float range;
+    private float luck;
+    private Generator generator;
+    private PrefabLoader prefabLoader;
+    private ArrayList<Prefab> prefabsForFloor;
+    private EntityPlayer player;
 
-    EntityPlayer player;
+    private Floor[] floors;
+    private int floorIndex;
 
-    Floor[] floors;
-    int floorIndex;
-
-    ArrayList<Item> items;
+    private ArrayList<Item> items;
 
     public Run(Character character) {
         this.character = character;
@@ -108,32 +106,64 @@ public class Run {
         return hp;
     }
 
+    public void setHp(int hp) {
+        this.hp = hp;
+    }
+
     public float getDamage() {
         return damage;
+    }
+
+    public void setDamage(float damage) {
+        this.damage = damage;
     }
 
     public int getFireDelay() {
         return fireDelay;
     }
 
+    public void setFireDelay(int fireDelay) {
+        this.fireDelay = fireDelay;
+    }
+
     public float getFireRate() {
         return fireRate;
+    }
+
+    public void setFireRate(float fireRate) {
+        this.fireRate = fireRate;
     }
 
     public float getAccuracy() {
         return accuracy;
     }
 
+    public void setAccuracy(float accuracy) {
+        this.accuracy = accuracy;
+    }
+
     public float getSpeed() {
         return speed;
+    }
+
+    public void setSpeed(float speed) {
+        this.speed = speed;
     }
 
     public float getRange() {
         return range;
     }
 
+    public void setRange(float range) {
+        this.range = range;
+    }
+
     public float getLuck() {
         return luck;
+    }
+
+    public void setLuck(float luck) {
+        this.luck = luck;
     }
 
     public ArrayList<Item> getItems() {
@@ -144,36 +174,8 @@ public class Run {
         this.player = player;
     }
 
-    public void setHp(int hp) {
-        this.hp = hp;
-    }
-
-    public void setDamage(float damage) {
-        this.damage = damage;
-    }
-
-    public void setFireDelay(int fireDelay) {
-        this.fireDelay = fireDelay;
-    }
-
-    public void setFireRate(float fireRate) {
-        this.fireRate = fireRate;
-    }
-
-    public void setAccuracy(float accuracy) {
-        this.accuracy = accuracy;
-    }
-
-    public void setSpeed(float speed) {
-        this.speed = speed;
-    }
-
-    public void setRange(float range) {
-        this.range = range;
-    }
-
-    public void setLuck(float luck) {
-        this.luck = luck;
+    public int getFloorIndex() {
+        return floorIndex;
     }
 
     public void generate() {

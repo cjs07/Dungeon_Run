@@ -16,10 +16,10 @@ public class Floor {
     public static final int RIGHT = 2;
     public static final int DOWN = 3;
 
-    Room[][] layout;
-    Room currentRoom;
-    int currentX;
-    int currentY;
+    private Room[][] layout;
+    private Room currentRoom;
+    private int currentX;
+    private int currentY;
 
     public Floor(int[][] layout, Prefab[][] prefabLayout) {
         this.layout = new Room[layout.length][layout[0].length];

@@ -16,24 +16,24 @@ public class GamePanel extends JPanel implements KeyListener, Runnable{
 
     public static GamePanel instance;
 
-    public boolean isActive;
+    boolean isActive;
 
-    boolean paused;
+    private boolean paused;
 
-    GameFrame frame;
-    Run run;
+    private GameFrame frame;
+    private Run run;
 
-    Image fullHeart;
-    Image halfHeart;
+    private Image fullHeart;
+    private Image halfHeart;
 
-    int framesSinceShot;
-    boolean canFire;
+    private int framesSinceShot;
+    private boolean canFire;
 
-    boolean itemPickup;
-    Item pickup;
-    int pickupFrames;
+    private boolean itemPickup;
+    private Item pickup;
+    private int pickupFrames;
 
-    public GamePanel(GameFrame frame) {
+    GamePanel(GameFrame frame) {
         this.frame = frame;
         run = null;
         fullHeart = new ImageIcon("res/fullheart.png").getImage();
@@ -41,7 +41,7 @@ public class GamePanel extends JPanel implements KeyListener, Runnable{
         instance = this;
     }
 
-    public void startRun(Run run) {
+    void startRun(Run run) {
         this.run = run;
         Character c = this.run.character;
         System.out.print(c.id + c.name + c.hp + c.damage + c.fireDelay + c.fireRate + c.accuracy + c.speed + c.range + c.luck);
@@ -80,7 +80,7 @@ public class GamePanel extends JPanel implements KeyListener, Runnable{
             g.drawImage(halfHeart, (run.getHp() - 1) * fullHeart.getWidth(null), 10, null);
         }
 
-        run.getCurrentFloor().getCurrentRoom().draw(this, g);
+        run.getCurrentFloor().getCurrentRoom().draw(g);
 
         if (itemPickup) {
             String itemName = pickup.getName();

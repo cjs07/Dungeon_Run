@@ -11,29 +11,30 @@ import com.deepwelldevelopment.dungeonrun.engine.game.entity.item.EntityItem;
 import com.deepwelldevelopment.dungeonrun.engine.game.entity.item.EntityItemPedestal;
 import com.deepwelldevelopment.dungeonrun.engine.game.entity.projectile.EntityProjectile;
 import com.deepwelldevelopment.dungeonrun.engine.physics.PhysicsManager;
+import com.deepwelldevelopment.dungeonrun.engine.prefab.Prefab;
 import com.deepwelldevelopment.dungeonrun.engine.run.Run;
 
-import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.stream.Collectors;
 
 import static com.deepwelldevelopment.dungeonrun.engine.DungeonRun.library;
 
 public class Room {
 
-    Image display;
-    int[][] grid;
-    int[][] entityGrid;
-    ArrayList<Entity> entities;
-    EntityPlayer player;
-    PhysicsManager physicsManager;
+    private Image display;
+    private int[][] grid;
+    private int[][] entityGrid;
+    private ArrayList<Entity> entities;
+    private EntityPlayer player;
+    private PhysicsManager physicsManager;
 
-    boolean clear;
+    private boolean clear;
 
     private boolean showHitboxes = true;
 
-    public Room(Image display, int[][] grid, int[][] entityGrid) {
+    public Room(Image display, int[][] grid, int[][] entityGrid, Prefab prefab) {
         this.display = display;
         this.grid = grid;
         this.entityGrid = entityGrid;
@@ -61,16 +62,15 @@ public class Room {
                             break;
                     }
                     toAdd.setX((x * (display.getWidth(null) / entityGrid[0].length) + offsetX)).setY((y * (display.getHeight(null) / entityGrid.length)) + offsetY);
-                    if (toAdd instanceof EntityEnemy) {
-                        ((EntityEnemy)toAdd).registerAis();
-                    }
+                    ((EntityEnemy) toAdd).registerAis();
                     entities.add(toAdd);
                 }
             }
         }
+        prefab.addSpecialEntities(this);
     }
 
-    public void draw(JPanel source, Graphics g) {
+    public void draw(Graphics g) {
         int blankSpaceX = library.getScreenWidth() - display.getWidth(null);
         int blankSpaceY = library.getScreenHeight() - display.getHeight(null);
         int offsetX = blankSpaceX/2;
@@ -183,7 +183,7 @@ public class Room {
         entities.add(entity);
     }
 
-    public void initializeDoors() {
+    void initializeDoors() {
         int blankSpaceX = library.getScreenWidth() - display.getWidth(null);
         int blankSpaceY = library.getScreenHeight() - display.getHeight(null);
         int offsetX = blankSpaceX/2;
@@ -215,9 +215,10 @@ public class Room {
                 }
             }
         }
+
     }
 
-    public void playerEnter(int fromDirection) {
+    void playerEnter(int fromDirection) {
         int blankSpaceX = library.getScreenWidth() - display.getWidth(null);
         int blankSpaceY = library.getScreenHeight() - display.getHeight(null);
         int offsetX = blankSpaceX/2;
@@ -243,7 +244,7 @@ public class Room {
         System.out.println("player entered");
     }
 
-    public void playerExit() {
+    void playerExit() {
         for (Entity e : entities) {
             if (e instanceof EntityEnemy) {
                 reinitialize();
@@ -253,23 +254,14 @@ public class Room {
         System.out.println("player exited");
     }
 
-    public void clear() {
+    private void clear() {
         System.out.println("room cleared. opening doors");
         clear = true;
-        for (Entity e : entities) {
-            if (e instanceof EntityDoor) {
-                ((EntityDoor) e).open();
-            }
-        }
+        entities.stream().filter(e -> e instanceof EntityDoor).forEach(e -> ((EntityDoor) e).open());
     }
 
-    public void reinitialize() {
-        ArrayList<Entity> nonEnemies = new ArrayList<>();
-        for (Entity e : entities) {
-            if (e instanceof EntityItemPedestal || e instanceof EntityItem || e instanceof EntityDoor) {
-                nonEnemies.add(e);
-            }
-        }
+    private void reinitialize() {
+        ArrayList<Entity> nonEnemies = entities.stream().filter(e -> e instanceof EntityItemPedestal || (e instanceof EntityItem) || (e instanceof EntityDoor)).collect(Collectors.toCollection(ArrayList::new));
         entities.clear();
         entities.addAll(nonEnemies);
         for (int x = 0; x < entityGrid[0].length; x++) {

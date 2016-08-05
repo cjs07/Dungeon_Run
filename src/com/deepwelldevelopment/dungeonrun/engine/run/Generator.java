@@ -1,15 +1,14 @@
 package com.deepwelldevelopment.dungeonrun.engine.run;
 
 import com.deepwelldevelopment.dungeonrun.engine.game.Floor;
+import com.deepwelldevelopment.dungeonrun.engine.prefab.FloorBossPrefab;
 import com.deepwelldevelopment.dungeonrun.engine.prefab.ItemRoomPrefab;
 import com.deepwelldevelopment.dungeonrun.engine.prefab.Prefab;
 
 import javax.swing.*;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Random;
-import java.util.Scanner;
 
 public class Generator {
 
@@ -20,19 +19,19 @@ public class Generator {
     public static final int BOSS_ROOM = 4;
     public static final int FLOOR_BOSS_ROOM = 5;
 
-    Random rng;
-    int bossRooms;
-    int itemRooms;
+    private Random rng;
+    private int bossRooms;
+    private int itemRooms;
     private int[][] layout;
     private Prefab[][] prefabLayout;
 
-    public Generator(Random rng) {
+    Generator(Random rng) {
         this.rng = rng;
         layout = new int[15][15];
         prefabLayout = new Prefab[15][15];
     }
 
-    public Floor[] generateRun(Run run) {
+    Floor[] generateRun(Run run) {
         Floor[] floors = new Floor[run.floorTo];
         for (int i = 0; i < run.floorTo; i++) {
             int[][] layout = generateFloor(new File("res/generation/floor" + i + ".drg"));
@@ -48,13 +47,6 @@ public class Generator {
                 layout[x][y] = NON_ROOM;
             }
         }
-        Scanner scanner;
-        try {
-            scanner = new Scanner(restrictions);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            scanner = new Scanner("res/generation/defaults.drg");
-        }
 
         int spawnX = (int) Math.floor(layout.length / 2);
         int spawnY = (int) Math.floor(layout.length / 2);
@@ -67,9 +59,9 @@ public class Generator {
         generateBranch(spawnX, spawnY, 3, rng.nextInt(3) + 5);
 
         System.out.println();
-        for (int y = 0; y < layout.length; y++) {
+        for (int[] aLayout : layout) {
             for (int x = 0; x < layout[0].length; x++) {
-                System.out.print(layout[y][x] + "    ");
+                System.out.print(aLayout[x] + "    ");
             }
             System.out.print("\n");
         }
@@ -84,9 +76,9 @@ public class Generator {
 
         validate();
 
-        for (int y = 0; y < layout.length; y++) {
+        for (int[] aLayout : layout) {
             for (int x = 0; x < layout[0].length; x++) {
-                System.out.print(layout[y][x] + "    ");
+                System.out.print(aLayout[x] + "    ");
             }
             System.out.print("\n");
         }
@@ -102,13 +94,11 @@ public class Generator {
                     prefabLayout[y][x] = availablePrefabs.get(selectionIndex);
                 } else if (layout[y][x] == ITEM_ROOM) {
                     prefabLayout[y][x] = new ItemRoomPrefab(new ImageIcon("res/prefabs/forest2.png").getImage(), new int[50][50], new int[50][50]);
-
                 } else if (layout[y][x] == BOSS_ROOM) {
                     int selectionIndex = rng.nextInt(availablePrefabs.size());
                     prefabLayout[y][x] = availablePrefabs.get(selectionIndex);
                 } else if (layout[y][x] == FLOOR_BOSS_ROOM) {
-                    int selectionIndex = rng.nextInt(availablePrefabs.size());
-                    prefabLayout[y][x] = availablePrefabs.get(selectionIndex);
+                    prefabLayout[y][x] = new FloorBossPrefab(new ImageIcon("res/prefabs/forest2.png").getImage(), new int[50][50], new int[50][50]);
                 }
             }
         }
@@ -166,7 +156,7 @@ public class Generator {
         }
     }
 
-    void addSpecialRooms() {
+    private void addSpecialRooms() {
         for (int y = 0; y < layout.length; y++) {
             for (int x = 0; x < layout[0].length; x++) {
                 if (layout[y][x] == NORMAL_ROOM) {

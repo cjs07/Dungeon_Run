@@ -7,7 +7,7 @@ import javax.swing.*;
 
 public class BossGuardianOfTheShrine extends EntityBoss {
     public BossGuardianOfTheShrine(int x, int y) {
-        super(100, new ImageIcon("res/assets/boss/gurdianoftheshrine").getImage(), x, y, 150, new Hitbox(x, y, 128, 128), 100, "Gurdian of the Shrine");
+        super(100, new ImageIcon("res/assets/boss/gurdianoftheshrine.png").getImage(), x, y, 150, new Hitbox(x, y, 128, 128), 100, "Gurdian of the Shrine");
     }
 
     @Override
