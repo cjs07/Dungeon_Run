@@ -1,7 +1,14 @@
 package com.deepwelldevelopment.dungeonrun.engine.game.entity.damagable.movable.enemy.attack;
 
-public class Attack {
+import com.deepwelldevelopment.dungeonrun.engine.game.entity.Entity;
 
-    public void execute() {
+public abstract class Attack {
+
+    protected Entity source;
+
+    public Attack(Entity source) {
+        this.source = source;
     }
+
+    public abstract void execute();
 }

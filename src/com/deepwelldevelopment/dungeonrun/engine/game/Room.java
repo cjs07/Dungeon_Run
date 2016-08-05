@@ -131,55 +131,55 @@ public class Room {
         int offsetX = blankSpaceX / 2;
         int offsetY = blankSpaceY / 2;
         player = Run.instance.getPlayer();
-        //synchronized (entities) {
-        for (Iterator<Entity> iterator = entities.iterator(); iterator.hasNext(); ) {
-            Entity e = iterator.next();
-            if (e.destroyed()) {
-                iterator.remove();
-            } else {
-                e.update();
-                if (e.getX() < offsetX || e.getX() + e.getImage().getWidth(null) > offsetX + display.getWidth(null)) {
-                    if (e instanceof EntityProjectile) {
-                        e.destroy();
-                    } else if (e instanceof EntityMovable) {
-                        EntityMovable entityMovable = ((EntityMovable) e);
-                        entityMovable.setDx(0);
-                        entityMovable.setX(e.getX() < offsetX ? offsetX : offsetX + display.getWidth(null) - player.getImage().getWidth(null));
+        synchronized (entities) {
+            for (Iterator<Entity> iterator = entities.iterator(); iterator.hasNext(); ) {
+                Entity e = iterator.next();
+                if (e.destroyed()) {
+                    iterator.remove();
+                } else {
+                    e.update();
+                    if (e.getX() < offsetX || e.getX() + e.getImage().getWidth(null) > offsetX + display.getWidth(null)) {
+                        if (e instanceof EntityProjectile) {
+                            e.destroy();
+                        } else if (e instanceof EntityMovable) {
+                            EntityMovable entityMovable = ((EntityMovable) e);
+                            entityMovable.setDx(0);
+                            entityMovable.setX(e.getX() < offsetX ? offsetX : offsetX + display.getWidth(null) - player.getImage().getWidth(null));
+                        }
+                    }
+                    if (e.getY() < offsetY || e.getY() + e.getImage().getHeight(null) > offsetY + display.getHeight(null)) {
+                        if (e instanceof EntityProjectile) {
+                            e.destroy();
+                        } else if (e instanceof EntityMovable) {
+                            EntityMovable entityMovable = ((EntityMovable) e);
+                            entityMovable.setDy(0);
+                            entityMovable.setY(e.getY() < offsetY ? offsetY : offsetY + display.getHeight(null) - player.getImage().getHeight(null));
+                        }
                     }
                 }
-                if (e.getY() < offsetY || e.getY() + e.getImage().getHeight(null) > offsetY + display.getHeight(null)) {
-                    if (e instanceof EntityProjectile) {
-                        e.destroy();
-                    } else if (e instanceof EntityMovable) {
-                        EntityMovable entityMovable = ((EntityMovable) e);
-                        entityMovable.setDy(0);
-                        entityMovable.setY(e.getY() < offsetY ? offsetY : offsetY + display.getHeight(null) - player.getImage().getHeight(null));
-                    }
-                }
+            }
+            player.update();
+            if (player.getX() < offsetX || player.getX() + player.getImage().getWidth(null) > offsetX + display.getWidth(null)) {
+                player.setDx(0);
+                player.setX(player.getX() < offsetX ? offsetX : offsetX + display.getWidth(null) - player.getImage().getWidth(null));
+            }
+            if (player.getY() < offsetY || player.getY() + player.getImage().getHeight(null) > offsetY + display.getHeight(null)) {
+                player.setDy(0);
+                player.setY(player.getY() < offsetY ? offsetY : offsetY + display.getHeight(null) - player.getImage().getHeight(null));
+            }
+            physicsManager.tick();
+            for (Entity e : entities) {
+                if (e instanceof EntityEnemy) {
+                    return;
                 }
             }
-        player.update();
-        if (player.getX() < offsetX || player.getX() + player.getImage().getWidth(null) > offsetX + display.getWidth(null)) {
-            player.setDx(0);
-            player.setX(player.getX() < offsetX ? offsetX : offsetX + display.getWidth(null) - player.getImage().getWidth(null));
-        }
-        if (player.getY() < offsetY || player.getY() + player.getImage().getHeight(null) > offsetY + display.getHeight(null)) {
-            player.setDy(0);
-            player.setY(player.getY() < offsetY ? offsetY : offsetY + display.getHeight(null) - player.getImage().getHeight(null));
-        }
-        physicsManager.tick();
-        for (Entity e : entities) {
-            if (e instanceof EntityEnemy) {
-                return;
+            if (!clear) {
+                clear();
             }
         }
-        if (!clear) {
-            clear();
-        }
-        //}
     }
 
-    public void addEntity(Entity entity) {
+    public synchronized void addEntity(Entity entity) {
         entities.add(entity);
     }
 

@@ -384,4 +384,8 @@ public class Generator {
     public long generateRandomSeed() {
         return rng.nextLong();
     }
+
+    public int generateInt(int i) {
+        return rng.nextInt(i);
+    }
 }

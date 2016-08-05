@@ -40,6 +40,8 @@ public class EntityProjectile extends Entity {
 
         if (source instanceof EntityPlayer) {
             image = new ImageIcon("res/playershot.png").getImage();
+        } else {
+            image = new ImageIcon("res/assets/shot.png").getImage();
         }
     }
 

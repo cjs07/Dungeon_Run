@@ -4,7 +4,7 @@ import com.deepwelldevelopment.dungeonrun.engine.game.entity.Entity;
 
 public abstract class AI {
 
-    Entity owner;
+    protected Entity owner;
 
     public AI (Entity owner) {
         this.owner = owner;
