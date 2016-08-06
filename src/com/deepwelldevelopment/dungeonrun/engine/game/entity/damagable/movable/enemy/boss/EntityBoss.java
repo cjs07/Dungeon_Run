@@ -3,6 +3,7 @@ package com.deepwelldevelopment.dungeonrun.engine.game.entity.damagable.movable.
 import com.deepwelldevelopment.dungeonrun.engine.game.entity.damagable.movable.enemy.EntityEnemy;
 import com.deepwelldevelopment.dungeonrun.engine.game.entity.damagable.movable.enemy.attack.Attack;
 import com.deepwelldevelopment.dungeonrun.engine.physics.Hitbox;
+import com.deepwelldevelopment.dungeonrun.engine.run.Run;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -21,6 +22,7 @@ public class EntityBoss extends EntityEnemy {
         this.name = name;
 
         attacks = new ArrayList<>();
+        random = new Random(Run.instance.getGenerator().generateRandomSeed());
     }
 
     public void doAttack() {

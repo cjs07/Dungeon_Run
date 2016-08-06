@@ -16,6 +16,8 @@ public class BossWalkAI extends AI {
     int framesToMove;
     int pauseFrames;
 
+    boolean canAttack;
+
     public BossWalkAI(Entity owner) {
         super(owner);
 
@@ -23,6 +25,7 @@ public class BossWalkAI extends AI {
 
         framesToMove = 0;
         pauseFrames = 0;
+        canAttack = false;
     }
 
     @Override
@@ -31,29 +34,36 @@ public class BossWalkAI extends AI {
             ((EntityMovable) owner).setDx(0).setDy(0);
             pauseFrames--;
 
-            ((EntityBoss) owner).doAttack();
+            if (canAttack) {
+                ((EntityBoss) owner).doAttack();
+                canAttack = false;
+            }
         }
 
         if (framesToMove <= 0 && pauseFrames <= 0) {
             framesToMove = random.nextInt(11) + 30;
             switch (random.nextInt(4)) {
                 case Floor.LEFT:
-                    ((EntityMovable) owner).setDx(-1).setDy(0);
+                    ((EntityMovable) owner).setDx(-2).setDy(0);
                     break;
                 case Floor.UP:
-                    ((EntityMovable) owner).setDx(0).setDy(1);
+                    ((EntityMovable) owner).setDx(0).setDy(2);
                     break;
                 case Floor.RIGHT:
-                    ((EntityMovable) owner).setDx(1).setDy(0);
+                    ((EntityMovable) owner).setDx(2).setDy(0);
                     break;
                 case Floor.DOWN:
-                    ((EntityMovable) owner).setDx(0).setDy(-1);
+                    ((EntityMovable) owner).setDx(0).setDy(-2);
                     break;
                 default:
                     break;
             }
         } else {
             framesToMove--;
+            if (framesToMove <= 0) {
+                pauseFrames = random.nextInt(10) + 1;
+                canAttack = true;
+            }
         }
     }
 }

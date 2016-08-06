@@ -29,6 +29,7 @@ public class Room {
     private ArrayList<Entity> entities;
     private EntityPlayer player;
     private PhysicsManager physicsManager;
+    private ArrayList<Entity> toAdd;
 
     private boolean clear;
 
@@ -47,6 +48,7 @@ public class Room {
         int blankSpaceY = library.getScreenHeight() - display.getHeight(null);
         int offsetX = blankSpaceX/2;
         int offsetY = blankSpaceY/2;
+        toAdd = new ArrayList<>();
         for (int x = 0; x < entityGrid[0].length; x++) {
             for (int y = 0; y < entityGrid.length; y++) {
                 int value = entityGrid[y][x];
@@ -132,28 +134,30 @@ public class Room {
         int offsetY = blankSpaceY / 2;
         player = Run.instance.getPlayer();
         synchronized (entities) {
+            entities.addAll(toAdd);
+            toAdd.clear();
             for (Iterator<Entity> iterator = entities.iterator(); iterator.hasNext(); ) {
                 Entity e = iterator.next();
                 if (e.destroyed()) {
                     iterator.remove();
                 } else {
                     e.update();
-                    if (e.getX() < offsetX || e.getX() + e.getImage().getWidth(null) > offsetX + display.getWidth(null)) {
+                    if (e.getX() < offsetX + library.getWallWidth() || e.getX() + e.getImage().getWidth(null) > offsetX + display.getWidth(null) - library.getWallWidth()) {
                         if (e instanceof EntityProjectile) {
                             e.destroy();
                         } else if (e instanceof EntityMovable) {
                             EntityMovable entityMovable = ((EntityMovable) e);
                             entityMovable.setDx(0);
-                            entityMovable.setX(e.getX() < offsetX ? offsetX : offsetX + display.getWidth(null) - player.getImage().getWidth(null));
+                            entityMovable.setX(e.getX() < offsetX + library.getWallWidth() ? offsetX + library.getWallWidth() : offsetX + display.getWidth(null) - entityMovable.getImage().getWidth(null) - library.getWallWidth());
                         }
                     }
-                    if (e.getY() < offsetY || e.getY() + e.getImage().getHeight(null) > offsetY + display.getHeight(null)) {
+                    if (e.getY() < offsetY + library.getWallWidth() || e.getY() + e.getImage().getHeight(null) > offsetY + display.getHeight(null) - library.getWallWidth()) {
                         if (e instanceof EntityProjectile) {
                             e.destroy();
                         } else if (e instanceof EntityMovable) {
                             EntityMovable entityMovable = ((EntityMovable) e);
                             entityMovable.setDy(0);
-                            entityMovable.setY(e.getY() < offsetY ? offsetY : offsetY + display.getHeight(null) - player.getImage().getHeight(null));
+                            entityMovable.setY(e.getY() < offsetY + library.getWallWidth() ? offsetY + library.getWallWidth() : offsetY + display.getHeight(null) - entityMovable.getImage().getHeight(null) - library.getWallWidth());
                         }
                     }
                 }
@@ -180,7 +184,7 @@ public class Room {
     }
 
     public synchronized void addEntity(Entity entity) {
-        entities.add(entity);
+        toAdd.add(entity);
     }
 
     void initializeDoors() {

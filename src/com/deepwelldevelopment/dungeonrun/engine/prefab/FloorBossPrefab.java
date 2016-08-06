@@ -1,5 +1,6 @@
 package com.deepwelldevelopment.dungeonrun.engine.prefab;
 
+import com.deepwelldevelopment.dungeonrun.engine.DungeonRun;
 import com.deepwelldevelopment.dungeonrun.engine.game.entity.damagable.movable.enemy.boss.BossGuardianOfTheShrine;
 import com.deepwelldevelopment.dungeonrun.engine.run.Run;
 
@@ -17,7 +18,10 @@ public class FloorBossPrefab extends Prefab {
         }
         switch (Run.instance.getFloorIndex()) {
             case 0:
-                specialEntities.add(new BossGuardianOfTheShrine(0, 0));
+                BossGuardianOfTheShrine toAdd = new BossGuardianOfTheShrine(DungeonRun.library.getScreenWidth() / 2 - visual.getWidth(null) / 2, 0);
+                System.out.println(DungeonRun.library.getScreenWidth());
+                toAdd.registerAis();
+                specialEntities.add(toAdd);
                 break;
             default:
                 break;

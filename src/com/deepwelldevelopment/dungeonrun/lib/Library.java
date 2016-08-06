@@ -3,6 +3,7 @@ package com.deepwelldevelopment.dungeonrun.lib;
 public class Library {
 
     final int wallOffset = 6;
+    final int wallWidth = 70;
 
     int screenWidth;
     int screenHeight;
@@ -34,5 +35,9 @@ public class Library {
 
     public int getWallOffset() {
         return wallOffset;
+    }
+
+    public int getWallWidth() {
+        return wallWidth;
     }
 }
