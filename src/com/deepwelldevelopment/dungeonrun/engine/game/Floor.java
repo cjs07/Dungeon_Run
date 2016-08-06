@@ -53,9 +53,9 @@ public class Floor {
                     if (x < layout[0].length - 1) {
                         if (layout[y][x + 1] != Generator.NON_ROOM) {
                             toAdd.addEntity(new EntityDoor(new ImageIcon("res/assets/doorright.png").getImage(), 0, 0, new Hitbox(0, 0, 128, 64), RIGHT));
-                            toAdd.update();
                         }
                     }
+                    toAdd.entityUpdate();
                     toAdd.initializeDoors();
                     this.layout[y][x] = toAdd;
                 }
