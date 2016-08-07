@@ -82,7 +82,6 @@ public class ClassSelectPanel extends JPanel implements KeyListener, Runnable {
                 frame.addKeyListener(frame.mmp);
                 frame.setContentPane(frame.mmp);
             }
-            System.out.println("key pressed");
         }
     }
 

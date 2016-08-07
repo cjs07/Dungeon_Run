@@ -7,18 +7,20 @@ import com.deepwelldevelopment.dungeonrun.engine.game.entity.projectile.EntityPr
 import com.deepwelldevelopment.dungeonrun.engine.physics.Hitbox;
 import com.deepwelldevelopment.dungeonrun.engine.run.Run;
 
+import javax.swing.*;
+
 public class ProjectileAttack extends Attack {
 
-    EntityProjectile[] createdProjectiles;
-    AttackPattern pattern;
+    private EntityProjectile[] createdProjectiles;
+    private AttackPattern pattern;
 
-    public ProjectileAttack(Entity source, int numberOfProjectiles, AttackPattern pattern) {
+    ProjectileAttack(Entity source, int numberOfProjectiles, AttackPattern pattern) {
         super(source);
         createdProjectiles = new EntityProjectile[numberOfProjectiles];
         this.pattern = pattern;
 
         for (int i = 0; i < createdProjectiles.length; i++) {
-            createdProjectiles[i] = new EntityProjectile(source, new Hitbox(source.getX(), source.getY(), 16, 16), source.getX(), source.getY(), 200);
+            createdProjectiles[i] = new EntityProjectile(source, new Hitbox(source.getX(), source.getY(), 16, 16), new ImageIcon("res/assets/shot.png").getImage(), source.getX(), source.getY(), 200);
         }
     }
 
@@ -28,6 +30,9 @@ public class ProjectileAttack extends Attack {
     }
 
     public void execute(int direction) {
+        for (int i = 0; i < createdProjectiles.length; i++) {
+            createdProjectiles[i] = new EntityProjectile(source, new Hitbox(source.getCenterX(), source.getCenterY(), 16, 16), new ImageIcon("res/assets/shot.png").getImage(), source.getCenterX(), source.getCenterY(), 200);
+        }
         switch (direction) {
             case Floor.LEFT:
                 for (int i = 0; i < createdProjectiles.length; i++) {
@@ -53,9 +58,7 @@ public class ProjectileAttack extends Attack {
                 break;
         }
 
-        for (EntityProjectile e : createdProjectiles) {
-            Run.instance.getCurrentFloor().getCurrentRoom().addEntity(e);
-        }
+        Run.instance.getCurrentFloor().getCurrentRoom().addEntities(createdProjectiles);
     }
 
     enum AttackPattern {

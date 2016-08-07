@@ -16,6 +16,7 @@ import com.deepwelldevelopment.dungeonrun.engine.run.Run;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.stream.Collectors;
 
@@ -235,6 +236,10 @@ public class Room {
         toAdd.add(entity);
     }
 
+    public synchronized void addEntities(Entity[] entities) {
+        Collections.addAll(toAdd, entities);
+    }
+
     void initializeDoors() {
         int blankSpaceX = library.getScreenWidth() - display.getWidth(null);
         int blankSpaceY = library.getScreenHeight() - display.getHeight(null);
@@ -292,7 +297,6 @@ public class Room {
             default:
                 break;
         }
-        System.out.println("player entered");
     }
 
     void playerExit() {
@@ -302,11 +306,9 @@ public class Room {
                 return;
             }
         }
-        System.out.println("player exited");
     }
 
     private void clear() {
-        System.out.println("room cleared. opening doors");
         clear = true;
         entities.stream().filter(e -> e instanceof EntityDoor).forEach(e -> ((EntityDoor) e).open());
     }

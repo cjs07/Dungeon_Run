@@ -11,11 +11,10 @@ public class Entity {
     protected Image image;
     protected int x;
     protected int y;
+    protected int centerX;
+    protected int centerY;
     int id;
     boolean destroy;
-
-    int centerX;
-    int centerY;
 
     public Entity(int id, Image image, int x, int y) {
         this.id = id;

@@ -58,14 +58,6 @@ public class Generator {
         generateBranch(spawnX, spawnY, 2, rng.nextInt(3) + 5);
         generateBranch(spawnX, spawnY, 3, rng.nextInt(3) + 5);
 
-        System.out.println();
-        for (int[] aLayout : layout) {
-            for (int x = 0; x < layout[0].length; x++) {
-                System.out.print(aLayout[x] + "    ");
-            }
-            System.out.print("\n");
-        }
-
         bossRooms = 3;
         itemRooms = 3;
         try {
@@ -243,7 +235,6 @@ public class Generator {
                 }
             }
         }
-        System.out.println(bossRooms + ", " + itemRooms);
         if (bossRooms > 0 || itemRooms > 0) {
             addSpecialRooms();
         }
@@ -348,7 +339,6 @@ public class Generator {
                 }
             }
         }
-        System.out.println(bossRooms + ", " + itemRooms);
         if (bossRooms > 0 || itemRooms > 0) {
             generateSpecialRooms();
         }

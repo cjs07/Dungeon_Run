@@ -22,7 +22,6 @@ public class EntityPlayer extends EntityMovable {
         super.update();
 
         if (invincible) {
-            System.out.println("invincibility frame");
             iFrames++;
             if (iFrames >= iFramesTarget) {
                 invincible = false;

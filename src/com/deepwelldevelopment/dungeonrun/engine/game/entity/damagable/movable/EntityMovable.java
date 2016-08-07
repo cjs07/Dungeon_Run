@@ -1,6 +1,5 @@
 package com.deepwelldevelopment.dungeonrun.engine.game.entity.damagable.movable;
 
-import com.deepwelldevelopment.dungeonrun.engine.game.entity.Entity;
 import com.deepwelldevelopment.dungeonrun.engine.game.entity.damagable.EntityDamageable;
 import com.deepwelldevelopment.dungeonrun.engine.physics.Hitbox;
 
@@ -18,6 +17,8 @@ public class EntityMovable extends EntityDamageable {
     public void update() {
         x += dx;
         y += dy;
+        centerX += dx;
+        centerY += dy;
 
         getHitbox().setX(x);
         getHitbox().setY(y);

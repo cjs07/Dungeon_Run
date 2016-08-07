@@ -44,7 +44,6 @@ public class GamePanel extends JPanel implements KeyListener, Runnable{
     void startRun(Run run) {
         this.run = run;
         Character c = this.run.character;
-        System.out.print(c.id + c.name + c.hp + c.damage + c.fireDelay + c.fireRate + c.accuracy + c.speed + c.range + c.luck);
         DungeonRun.library.setDoorOffset(run.getPlayer().getImage().getWidth(null));
         run.generate();
         paused = false;

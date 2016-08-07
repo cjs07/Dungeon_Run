@@ -19,7 +19,6 @@ public class FloorBossPrefab extends Prefab {
         switch (Run.instance.getFloorIndex()) {
             case 0:
                 BossGuardianOfTheShrine toAdd = new BossGuardianOfTheShrine(DungeonRun.library.getScreenWidth() / 2 - visual.getWidth(null) / 2, 0);
-                System.out.println(DungeonRun.library.getScreenWidth());
                 toAdd.registerAis();
                 specialEntities.add(toAdd);
                 break;

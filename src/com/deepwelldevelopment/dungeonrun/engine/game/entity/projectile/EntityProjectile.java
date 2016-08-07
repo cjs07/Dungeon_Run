@@ -75,8 +75,6 @@ public class EntityProjectile extends Entity {
         int yTraveled = y - startY;
         double traveled = Math.sqrt((xTraveled * xTraveled) + (yTraveled * yTraveled));
 
-        System.out.println(traveled);
-
         if (traveled >= range) {
             destroy();
         }

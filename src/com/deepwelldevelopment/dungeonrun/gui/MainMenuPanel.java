@@ -100,7 +100,6 @@ public class MainMenuPanel extends JPanel implements KeyListener, Runnable {
             } else if (keyCode == KeyEvent.VK_ESCAPE) {
                 System.exit(0);
             }
-            System.out.println("key pressed");
         }
     }
 

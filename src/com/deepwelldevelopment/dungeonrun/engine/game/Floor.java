@@ -1,6 +1,5 @@
 package com.deepwelldevelopment.dungeonrun.engine.game;
 
-import com.deepwelldevelopment.dungeonrun.engine.DungeonRun;
 import com.deepwelldevelopment.dungeonrun.engine.game.entity.EntityDoor;
 import com.deepwelldevelopment.dungeonrun.engine.physics.Hitbox;
 import com.deepwelldevelopment.dungeonrun.engine.prefab.Prefab;
@@ -23,8 +22,6 @@ public class Floor {
 
     public Floor(int[][] layout, Prefab[][] prefabLayout) {
         this.layout = new Room[layout.length][layout[0].length];
-
-        System.out.println("" + DungeonRun.library.getScreenWidth() + DungeonRun.library.getScreenHeight());
 
         for (int y = 0; y < layout.length; y++) {
             for (int x = 0; x < layout[0].length; x++) {
@@ -66,7 +63,6 @@ public class Floor {
                     currentY = y;
                 }
             }
-            System.out.println("" + currentX + ", " + currentY);
         }
     }
 
@@ -106,7 +102,5 @@ public class Floor {
         currentRoom.playerEnter(direction == LEFT  ? RIGHT : direction == UP ? DOWN : direction == RIGHT ? LEFT : UP);
         currentX += dx;
         currentY += dy;
-        System.out.println("room moved");
-        System.out.println("" + currentX + ", " + currentY);
     }
 }

@@ -34,7 +34,6 @@ public class PhysicsManager {
                             if (projectileSource.getSource() != targetDamageable) { //shots are not hitting entity that fired them
                                 Hitbox sourceBox = projectileSource.getHitbox();
                                 if (targetBox.intersects(sourceBox)) {
-                                    System.out.println("projectile collision");
                                     projectileSource.destroy();
                                     if (projectileSource.getSource() == Run.instance.getPlayer()) {
                                         targetDamageable.damage(Run.instance.getDamage());
@@ -52,7 +51,6 @@ public class PhysicsManager {
                             if (targetBox.intersects(sourceBox)) {
                                 if (target instanceof EntityPlayer) {
                                     EntityPlayer targetPlayer = (EntityPlayer) target;
-                                    System.out.println("contact damage");
                                     targetPlayer.damage(1);
                                 }
                             }

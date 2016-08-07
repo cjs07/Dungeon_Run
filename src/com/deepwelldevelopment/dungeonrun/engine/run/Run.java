@@ -83,7 +83,6 @@ public class Run {
     public void addItem(Item item) {
         items.add(item);
         item.onPickup();
-        System.out.println("" + hp + damage + fireDelay + accuracy + speed + range + luck);
     }
 
     public Generator getGenerator() {
