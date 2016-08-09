@@ -13,14 +13,14 @@ public class Entity {
     protected int y;
     protected int centerX;
     protected int centerY;
-    int id;
-    boolean destroy;
+    private int id;
+    private boolean destroy;
 
     public Entity(int id, Image image, int x, int y) {
         this.id = id;
         this.image = image;
-        this.x = x;
-        this.y = y;
+        this.x = x - image.getWidth(null) / 2;
+        this.y = y - image.getHeight(null) / 2;
 
         //register in global entity dictionary
         gameEntities.add(this);
@@ -45,6 +45,10 @@ public class Entity {
     public void update() {
     }
 
+    public void draw(Graphics g) {
+        g.drawImage(image, x, y, null);
+    }
+
     public int getId() {
         return id;
     }
@@ -58,8 +62,14 @@ public class Entity {
     }
 
     public Entity setX(int x) {
+        this.x = x - image.getWidth(null) / 2;
+        centerX = x;
+        return this;
+    }
+
+    public Entity setXForced(int x) {
         this.x = x;
-        centerX = x + (image.getWidth(null)/2);
+        centerX = x + image.getWidth(null) / 2;
         return this;
     }
 
@@ -68,8 +78,14 @@ public class Entity {
     }
 
     public Entity setY(int y) {
+        this.y = y - image.getHeight(null) / 2;
+        centerY = y;
+        return this;
+    }
+
+    public Entity setYForced(int y) {
         this.y = y;
-        centerY = y + (image.getHeight(null)/2);
+        centerY = y + image.getHeight(null) / 2;
         return this;
     }
 

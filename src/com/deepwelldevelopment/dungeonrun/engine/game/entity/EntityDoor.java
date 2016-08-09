@@ -6,9 +6,9 @@ import java.awt.*;
 
 public class EntityDoor extends Entity {
 
-    Hitbox hitbox;
-    boolean isOpen;
-    int direction;
+    private Hitbox hitbox;
+    private boolean isOpen;
+    private int direction;
 
     public EntityDoor(Image image, int x, int y, Hitbox hitbox, int direction) {
         super(image, x, y);
@@ -40,14 +40,14 @@ public class EntityDoor extends Entity {
 
     @Override
     public Entity setX(int x) {
-        super.setX(x);
+        this.x = x;
         hitbox.setX(x);
         return this;
     }
 
     @Override
     public Entity setY(int y) {
-        super.setY(y);
+        this.y = y;
         hitbox.setY(y);
         return this;
     }

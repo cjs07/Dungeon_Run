@@ -36,14 +36,14 @@ public class EntityDamageable extends Entity {
     @Override
     public Entity setX(int x) {
         super.setX(x);
-        hitbox.setX(x);
+        hitbox.setX(this.x);
         return this;
     }
 
     @Override
     public Entity setY(int y) {
         super.setY(y);
-        hitbox.setY(y);
+        hitbox.setY(this.y);
         return this;
     }
 }

@@ -33,21 +33,4 @@ public class EntityMovable extends EntityDamageable {
         this.dy = dy;
         return this;
     }
-
-    /*@Override
-    public Entity setX(int x) {
-        super.setX(x);
-        this.x = x-image.getWidth(null)/2;
-        getHitbox().setX(this.x);
-        return this;
-    }
-
-    @Override
-    public Entity setY(int y) {
-        super.setY(y);
-        this.y = y-image.getWidth(null)/2;
-        getHitbox().setY(this.y);
-        return this;
-    }
-    */
 }
