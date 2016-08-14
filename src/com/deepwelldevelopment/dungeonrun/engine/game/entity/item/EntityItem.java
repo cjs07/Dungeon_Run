@@ -6,7 +6,7 @@ import java.awt.*;
 
 public class EntityItem extends Entity {
 
-    public EntityItem(int id, Image image, int x, int y) {
-        super(id, image, x, y);
+    public EntityItem(Image image, int x, int y) {
+        super(image, x, y);
     }
 }

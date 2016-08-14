@@ -1,6 +1,9 @@
 package com.deepwelldevelopment.dungeonrun.engine.run;
 
 import com.deepwelldevelopment.dungeonrun.engine.game.Floor;
+import com.deepwelldevelopment.dungeonrun.engine.game.entity.Entity;
+import com.deepwelldevelopment.dungeonrun.engine.game.entity.item.pickup.PickupHeart;
+import com.deepwelldevelopment.dungeonrun.engine.game.entity.item.pickup.PickupKey;
 import com.deepwelldevelopment.dungeonrun.engine.prefab.FloorBossPrefab;
 import com.deepwelldevelopment.dungeonrun.engine.prefab.ItemRoomPrefab;
 import com.deepwelldevelopment.dungeonrun.engine.prefab.Prefab;
@@ -367,5 +370,17 @@ public class Generator {
 
     public int generateInt(int i) {
         return rng.nextInt(i);
+    }
+
+    public Entity generateRoomRewards(int x, int y) {
+        int type = rng.nextInt(25);
+        if (type < 5) {
+            return null;
+        } else if (type < 8) {
+            return new PickupHeart(x, y, rng.nextInt(10) < 8);
+        } else if (type < 13) {
+            return new PickupKey(x, y);
+        }
+        return null;
     }
 }

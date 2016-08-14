@@ -38,6 +38,9 @@ public class Run {
 
     private ArrayList<Item> items;
 
+    private int keys;
+    private int bossKeys;
+
     public Run(Character character) {
         this.character = character;
         hp = character.hp;
@@ -175,6 +178,30 @@ public class Run {
 
     public int getFloorIndex() {
         return floorIndex;
+    }
+
+    public void setKeys(int keys) {
+        this.keys = keys;
+    }
+
+    public void setBossKeys(int bossKeys) {
+        this.bossKeys = bossKeys;
+    }
+
+    public void addKey() {
+        keys++;
+    }
+
+    public void addKeys(int amount) {
+        keys += amount;
+    }
+
+    public void addBossKey() {
+        bossKeys++;
+
+        if (bossKeys >= 3) {
+            getCurrentFloor().unlockFloorBoss();
+        }
     }
 
     public void generate() {

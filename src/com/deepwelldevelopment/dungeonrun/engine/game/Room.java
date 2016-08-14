@@ -183,6 +183,9 @@ public class Room {
                 clear();
             }
         }
+        if (Run.instance.getCurrentFloor().getRoom(Floor.UP) == Run.instance.getCurrentFloor().getFloorBossRoom()) {
+            entities.stream().filter(e -> e instanceof EntityDoor).filter(e -> ((EntityDoor) e).getDirection() == Floor.UP && !Run.instance.getCurrentFloor().isFloorBossUnlocked()).close();
+        }
     }
 
     public void entityUpdate() {
@@ -310,7 +313,14 @@ public class Room {
 
     private void clear() {
         clear = true;
-        entities.stream().filter(e -> e instanceof EntityDoor).forEach(e -> ((EntityDoor) e).open());
+        entities.stream().filter(e -> e instanceof EntityDoor).filter(e -> ((EntityDoor) e).isUnlocked()).forEach(e -> ((EntityDoor) e).open());
+        if (Run.instance.getCurrentFloor().getRoom(Floor.UP) == Run.instance.getCurrentFloor().getFloorBossRoom()) {
+            entities.stream().filter(e -> e instanceof EntityDoor).filter(e -> ((EntityDoor) e).getDirection() == Floor.UP && !Run.instance.getCurrentFloor().isFloorBossUnlocked()).close();
+        }
+        Entity roomReward = Run.instance.getGenerator().generateRoomRewards(display.getWidth(null) / 2, display.getHeight(null) / 2);
+        if (roomReward != null) {
+            entities.add(roomReward);
+        }
     }
 
     private void reinitialize() {

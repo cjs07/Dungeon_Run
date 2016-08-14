@@ -17,8 +17,11 @@ public class Floor {
 
     private Room[][] layout;
     private Room currentRoom;
+    private Room floorBossRoom;
     private int currentX;
     private int currentY;
+
+    private boolean floorBossUnlocked;
 
     public Floor(int[][] layout, Prefab[][] prefabLayout) {
         this.layout = new Room[layout.length][layout[0].length];
@@ -62,8 +65,12 @@ public class Floor {
                     currentX = x;
                     currentY = y;
                 }
+                if (layout[y][x] == 5) {
+                    floorBossRoom = this.layout[y][x];
+                }
             }
         }
+        floorBossUnlocked = false;
     }
 
     public Room[][] getLayout() {
@@ -72,6 +79,14 @@ public class Floor {
 
     public Room getCurrentRoom() {
         return currentRoom;
+    }
+
+    public Room getFloorBossRoom() {
+        return floorBossRoom;
+    }
+
+    public boolean isFloorBossUnlocked() {
+        return floorBossUnlocked;
     }
 
     public void moveRoom(int direction) {
@@ -102,5 +117,35 @@ public class Floor {
         currentRoom.playerEnter(direction == LEFT  ? RIGHT : direction == UP ? DOWN : direction == RIGHT ? LEFT : UP);
         currentX += dx;
         currentY += dy;
+    }
+
+    public Room getRoom(int direction) {
+        int dx = 0;
+        int dy = 0;
+        switch (direction) {
+            case LEFT:
+                dx = -1;
+                dy = 0;
+                break;
+            case UP:
+                dx = 0;
+                dy = -1;
+                break;
+            case RIGHT:
+                dx = 1;
+                dy = 0;
+                break;
+            case DOWN:
+                dx = 0;
+                dy = 1;
+                break;
+            default:
+                break;
+        }
+        return layout[currentY + dy][currentX + dx];
+    }
+
+    public void unlockFloorBoss() {
+        floorBossUnlocked = true;
     }
 }

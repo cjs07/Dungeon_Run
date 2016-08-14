@@ -6,6 +6,7 @@ import com.deepwelldevelopment.dungeonrun.engine.game.entity.damagable.EntityDam
 import com.deepwelldevelopment.dungeonrun.engine.game.entity.damagable.movable.EntityPlayer;
 import com.deepwelldevelopment.dungeonrun.engine.game.entity.damagable.movable.enemy.EntityEnemy;
 import com.deepwelldevelopment.dungeonrun.engine.game.entity.item.EntityItemPedestal;
+import com.deepwelldevelopment.dungeonrun.engine.game.entity.item.pickup.EntityItemPickup;
 import com.deepwelldevelopment.dungeonrun.engine.game.entity.projectile.EntityProjectile;
 import com.deepwelldevelopment.dungeonrun.engine.run.Run;
 
@@ -70,6 +71,15 @@ public class PhysicsManager {
                                     if (sourceDoor.isOpen()) {
                                         Run.instance.getCurrentFloor().moveRoom(sourceDoor.getDirection());
                                     }
+                                }
+                            }
+                        } else if (source instanceof EntityItemPickup) {
+                            EntityItemPickup sourcePickup = (EntityItemPickup) source;
+                            Hitbox sourceBox = sourcePickup.getHitbox();
+                            if (target instanceof EntityPlayer) {
+                                if (targetBox.intersects(sourceBox)) {
+                                    sourcePickup.onPickup();
+                                    sourcePickup.destroy();
                                 }
                             }
                         }
