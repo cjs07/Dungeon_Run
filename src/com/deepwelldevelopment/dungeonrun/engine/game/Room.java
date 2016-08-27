@@ -7,6 +7,7 @@ import com.deepwelldevelopment.dungeonrun.engine.game.entity.damagable.movable.E
 import com.deepwelldevelopment.dungeonrun.engine.game.entity.damagable.movable.EntityPlayer;
 import com.deepwelldevelopment.dungeonrun.engine.game.entity.damagable.movable.enemy.EnemySpider;
 import com.deepwelldevelopment.dungeonrun.engine.game.entity.damagable.movable.enemy.EntityEnemy;
+import com.deepwelldevelopment.dungeonrun.engine.game.entity.damagable.movable.enemy.boss.EntityBoss;
 import com.deepwelldevelopment.dungeonrun.engine.game.entity.item.EntityItem;
 import com.deepwelldevelopment.dungeonrun.engine.game.entity.item.EntityItemPedestal;
 import com.deepwelldevelopment.dungeonrun.engine.game.entity.projectile.EntityProjectile;
@@ -300,9 +301,14 @@ public class Room {
             default:
                 break;
         }
+
+        if (entities.stream().filter(e -> e instanceof EntityBoss).toArray().length >= 1) {
+            Run.instance.getGamePanel().startBossFight();
+        }
     }
 
     void playerExit() {
+        Run.instance.getGamePanel().endBossFight();
         for (Entity e : entities) {
             if (e instanceof EntityEnemy) {
                 reinitialize();

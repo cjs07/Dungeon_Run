@@ -7,7 +7,7 @@ import java.awt.*;
 
 public class EntityDamageable extends Entity {
 
-    double hp;
+    protected double hp;
     Hitbox hitbox;
 
     public EntityDamageable(int id, Image image, int x, int y, double hp, Hitbox hitbox) {

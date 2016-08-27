@@ -2,6 +2,8 @@ package com.deepwelldevelopment.dungeonrun.gui;
 
 import com.deepwelldevelopment.dungeonrun.engine.DungeonRun;
 import com.deepwelldevelopment.dungeonrun.engine.characters.Character;
+import com.deepwelldevelopment.dungeonrun.engine.game.entity.Entity;
+import com.deepwelldevelopment.dungeonrun.engine.game.entity.damagable.movable.enemy.boss.EntityBoss;
 import com.deepwelldevelopment.dungeonrun.engine.game.item.Item;
 import com.deepwelldevelopment.dungeonrun.engine.run.Run;
 
@@ -9,6 +11,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
 
@@ -33,12 +36,24 @@ public class GamePanel extends JPanel implements KeyListener, Runnable{
     private Item pickup;
     private int pickupFrames;
 
+    private JProgressBar bossHealth;
+    private boolean inBossFight;
+    private EntityBoss bossFightBoss;
+
     GamePanel(GameFrame frame) {
         this.frame = frame;
         run = null;
         fullHeart = new ImageIcon("res/fullheart.png").getImage();
         halfHeart = new ImageIcon("res/halfheart.png").getImage();
         instance = this;
+        inBossFight = false;
+
+        setLayout(new BorderLayout());
+        bossHealth = new JProgressBar(JProgressBar.VERTICAL);
+
+        add(bossHealth, BorderLayout.WEST);
+
+        bossHealth.setVisible(true);
     }
 
     void startRun(Run run) {
@@ -98,6 +113,20 @@ public class GamePanel extends JPanel implements KeyListener, Runnable{
                 pickupFrames = 0;
             }
         }
+    }
+
+    public void startBossFight() {
+        inBossFight = true;
+        //TODO: BOSS FIGHT SCREEN TITLE ANIMATION THING
+        bossHealth.setVisible(true);
+        ArrayList<Entity> roomEntities = Run.instance.getCurrentFloor().getCurrentRoom().getEntities();
+        bossFightBoss = (EntityBoss) (roomEntities.stream().filter(e -> e instanceof EntityBoss).toArray())[0];
+    }
+
+    public void endBossFight() {
+        inBossFight = false;
+        //bossHealth.setVisible(false);
+        bossFightBoss = null;
     }
 
     @Override
@@ -177,6 +206,9 @@ public class GamePanel extends JPanel implements KeyListener, Runnable{
                 canFire = framesSinceShot >= 2 * run.getFireDelay();
                 repaint();
                 revalidate();
+                if (inBossFight) {
+                    bossHealth.setValue((int) bossFightBoss.getHealth());
+                }
                 if (Run.instance.getHp() <= 0) { //player is dead
                     isActive = false;
                     frame.gop.isActive = true;

@@ -74,7 +74,7 @@ public class ClassSelectPanel extends JPanel implements KeyListener, Runnable {
                 frame.removeKeyListener(this);
                 frame.addKeyListener(frame.gp);
                 frame.setContentPane(frame.gp);
-                frame.gp.startRun(new Run(Character.characters[selectedClass]));
+                frame.gp.startRun(new Run(Character.characters[selectedClass], frame.gp));
             } else if (keyCode == KeyEvent.VK_ESCAPE) {
                 isActive = false;
                 frame.mmp.isActive = true;

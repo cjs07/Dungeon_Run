@@ -41,4 +41,8 @@ public class EntityBoss extends EntityEnemy {
     public void setName(String name) {
         this.name = name;
     }
+
+    public double getHealth() {
+        return hp;
+    }
 }

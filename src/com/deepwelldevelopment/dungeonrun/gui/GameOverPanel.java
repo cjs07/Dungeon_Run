@@ -51,7 +51,7 @@ public class GameOverPanel extends JPanel implements KeyListener, Runnable {
                 frame.removeKeyListener(this);
                 frame.addKeyListener(frame.gp);
                 frame.setContentPane(frame.gp);
-                frame.gp.startRun(new Run(Character.characters[previousClass]));
+                frame.gp.startRun(new Run(Character.characters[previousClass], frame.gp));
                 break;
             case KeyEvent.VK_ESCAPE:
                 isActive = false;

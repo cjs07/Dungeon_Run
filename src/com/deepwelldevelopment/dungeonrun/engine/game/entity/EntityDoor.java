@@ -17,6 +17,7 @@ public class EntityDoor extends Entity {
         this.hitbox = hitbox;
         isOpen = false;
         this.direction = direction;
+        locked = false;
     }
 
     public EntityDoor(Image image, int x, int y, Hitbox hitbox, boolean isOpen, int direction, boolean locked) {
@@ -49,7 +50,7 @@ public class EntityDoor extends Entity {
     }
 
     public boolean isUnlocked() {
-        return locked;
+        return !locked;
     }
 
     public void unlock() {

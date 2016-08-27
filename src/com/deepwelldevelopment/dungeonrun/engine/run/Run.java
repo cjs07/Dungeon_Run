@@ -10,6 +10,7 @@ import com.deepwelldevelopment.dungeonrun.engine.game.item.Item;
 import com.deepwelldevelopment.dungeonrun.engine.physics.Hitbox;
 import com.deepwelldevelopment.dungeonrun.engine.prefab.Prefab;
 import com.deepwelldevelopment.dungeonrun.engine.prefab.PrefabLoader;
+import com.deepwelldevelopment.dungeonrun.gui.GamePanel;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -20,6 +21,7 @@ public class Run {
 
     public Character character;
     int floorTo = 1;
+    GamePanel gamePanel;
     private int hp;
     private float damage;
     private int fireDelay;
@@ -32,16 +34,13 @@ public class Run {
     private PrefabLoader prefabLoader;
     private ArrayList<Prefab> prefabsForFloor;
     private EntityPlayer player;
-
     private Floor[] floors;
     private int floorIndex;
-
     private ArrayList<Item> items;
-
     private int keys;
     private int bossKeys;
 
-    public Run(Character character) {
+    public Run(Character character, GamePanel gamePanel) {
         this.character = character;
         hp = character.hp;
         damage = character.damage;
@@ -56,6 +55,8 @@ public class Run {
         prefabLoader = new PrefabLoader("res/prefabs");
 
         prefabsForFloor = prefabLoader.loadPrefabsForFloor(1);
+
+        this.gamePanel = gamePanel;
 
         instance = this;
 
@@ -202,6 +203,10 @@ public class Run {
         if (bossKeys >= 3) {
             getCurrentFloor().unlockFloorBoss();
         }
+    }
+
+    public GamePanel getGamePanel() {
+        return gamePanel;
     }
 
     public void generate() {
