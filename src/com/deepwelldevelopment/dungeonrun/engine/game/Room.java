@@ -87,42 +87,44 @@ public class Room {
         //TODO: DRAW OBSTACLE LAYER
 
         for (Entity e : entities) {
-            e.draw(g);
-            if (showHitboxes) {
-                if (e instanceof EntityDamageable) {
-                    EntityDamageable ed = (EntityDamageable) e;
-                    Rectangle r = ed.getHitbox().toRect();
-                    g.setColor(Color.RED);
-                    g.drawRect((int) r.getX(), (int) r.getY(), (int) r.getWidth(), (int) r.getHeight());
-                } else if (e instanceof EntityProjectile) {
-                    EntityProjectile ep = (EntityProjectile)e;
-                    Rectangle r = ep.getHitbox().toRect();
-                    g.setColor(Color.RED);
-                    g.drawRect((int) r.getX(), (int) r.getY(), (int) r.getWidth(), (int) r.getHeight());
-                } else if (e instanceof EntityItemPedestal) {
-                    EntityItemPedestal eip = ((EntityItemPedestal) e);
-                    Rectangle r = eip.getHitbox().toRect();
-                    g.setColor(Color.RED);
-                    g.drawRect((int) r.getX(), (int) r.getY(), (int) r.getWidth(), (int) r.getHeight());
-                } else if (e instanceof EntityDoor) {
-                    EntityDoor ed = ((EntityDoor) e);
-                    Rectangle r = ed.getHitbox().toRect();
-                    g.setColor(Color.RED);
-                    g.drawRect((int) r.getX(), (int) r.getY(), (int) r.getWidth(), (int) r.getHeight());
+            if (e != null) {
+                e.draw(g);
+                if (showHitboxes) {
+                    if (e instanceof EntityDamageable) {
+                        EntityDamageable ed = (EntityDamageable) e;
+                        Rectangle r = ed.getHitbox().toRect();
+                        g.setColor(Color.RED);
+                        g.drawRect((int) r.getX(), (int) r.getY(), (int) r.getWidth(), (int) r.getHeight());
+                    } else if (e instanceof EntityProjectile) {
+                        EntityProjectile ep = (EntityProjectile) e;
+                        Rectangle r = ep.getHitbox().toRect();
+                        g.setColor(Color.RED);
+                        g.drawRect((int) r.getX(), (int) r.getY(), (int) r.getWidth(), (int) r.getHeight());
+                    } else if (e instanceof EntityItemPedestal) {
+                        EntityItemPedestal eip = ((EntityItemPedestal) e);
+                        Rectangle r = eip.getHitbox().toRect();
+                        g.setColor(Color.RED);
+                        g.drawRect((int) r.getX(), (int) r.getY(), (int) r.getWidth(), (int) r.getHeight());
+                    } else if (e instanceof EntityDoor) {
+                        EntityDoor ed = ((EntityDoor) e);
+                        Rectangle r = ed.getHitbox().toRect();
+                        g.setColor(Color.RED);
+                        g.drawRect((int) r.getX(), (int) r.getY(), (int) r.getWidth(), (int) r.getHeight());
+                    }
+                }
+                if (e instanceof EntityItemPedestal) {
+                    EntityItemPedestal itemPedestal = (EntityItemPedestal) e;
+                    if (itemPedestal.getItem() != null) {
+                        g.drawImage(itemPedestal.getItem().getImage(), itemPedestal.getX(), itemPedestal.getY() - 80, null);
+                    }
                 }
             }
-            if (e instanceof EntityItemPedestal) {
-                EntityItemPedestal itemPedestal = (EntityItemPedestal)e;
-                if (itemPedestal.getItem() != null) {
-                    g.drawImage(itemPedestal.getItem().getImage(), itemPedestal.getX(), itemPedestal.getY()-80, null);
-                }
-            }
-        }
 
-        if (showHitboxes) {
-            Rectangle r = player.getHitbox().toRect();
-            g.setColor(Color.RED);
-            g.drawRect((int)r.getX(), (int)r.getY(), (int)r.getWidth(), (int)r.getHeight());
+            if (showHitboxes) {
+                Rectangle r = player.getHitbox().toRect();
+                g.setColor(Color.RED);
+                g.drawRect((int) r.getX(), (int) r.getY(), (int) r.getWidth(), (int) r.getHeight());
+            }
         }
     }
 
@@ -141,38 +143,40 @@ public class Room {
             toAdd.clear();
             for (Iterator<Entity> iterator = entities.iterator(); iterator.hasNext(); ) {
                 Entity e = iterator.next();
-                if (e.destroyed()) {
-                    iterator.remove();
-                } else {
-                    e.update();
-                    if (e.getX() < offsetX + library.getWallWidth() || e.getX() + e.getImage().getWidth(null) > offsetX + display.getWidth(null) - library.getWallWidth()) {
-                        if (e instanceof EntityProjectile) {
-                            e.destroy();
-                        } else if (e instanceof EntityMovable) {
-                            EntityMovable entityMovable = ((EntityMovable) e);
-                            entityMovable.setDx(0);
-                            entityMovable.setXForced(e.getX() < offsetX + library.getWallWidth() ? offsetX + library.getWallWidth() : offsetX + display.getWidth(null) - entityMovable.getImage().getWidth(null) - library.getWallWidth());
+                if (e != null) {
+                    if (e.destroyed()) {
+                        iterator.remove();
+                    } else {
+                        e.update();
+                        if (e.getX() < offsetX + library.getWallWidth() || e.getX() + e.getImage().getWidth(null) > offsetX + display.getWidth(null) - library.getWallWidth()) {
+                            if (e instanceof EntityProjectile) {
+                                e.destroy();
+                            } else if (e instanceof EntityMovable) {
+                                EntityMovable entityMovable = ((EntityMovable) e);
+                                entityMovable.setDx(0);
+                                entityMovable.setXForced(e.getX() < offsetX + library.getWallWidth() ? offsetX + library.getWallWidth() : offsetX + display.getWidth(null) - entityMovable.getImage().getWidth(null) - library.getWallWidth());
+                            }
                         }
-                    }
-                    if (e.getY() < offsetY + library.getWallWidth() || e.getY() + e.getImage().getHeight(null) > offsetY + display.getHeight(null) - library.getWallWidth()) {
-                        if (e instanceof EntityProjectile) {
-                            e.destroy();
-                        } else if (e instanceof EntityMovable) {
-                            EntityMovable entityMovable = ((EntityMovable) e);
-                            entityMovable.setDy(0);
-                            entityMovable.setYForced(e.getY() < offsetY + library.getWallWidth() ? offsetY + library.getWallWidth() : offsetY + display.getHeight(null) - entityMovable.getImage().getHeight(null) - library.getWallWidth());
+                        if (e.getY() < offsetY + library.getWallWidth() || e.getY() + e.getImage().getHeight(null) > offsetY + display.getHeight(null) - library.getWallWidth()) {
+                            if (e instanceof EntityProjectile) {
+                                e.destroy();
+                            } else if (e instanceof EntityMovable) {
+                                EntityMovable entityMovable = ((EntityMovable) e);
+                                entityMovable.setDy(0);
+                                entityMovable.setYForced(e.getY() < offsetY + library.getWallWidth() ? offsetY + library.getWallWidth() : offsetY + display.getHeight(null) - entityMovable.getImage().getHeight(null) - library.getWallWidth());
+                            }
                         }
                     }
                 }
-            }
-            player.update();
-            if (player.getX() < offsetX || player.getX() + player.getImage().getWidth(null) > offsetX + display.getWidth(null)) {
-                player.setDx(0);
-                player.setXForced(player.getX() < offsetX ? offsetX : offsetX + display.getWidth(null) - player.getImage().getWidth(null));
-            }
-            if (player.getY() < offsetY || player.getY() + player.getImage().getHeight(null) > offsetY + display.getHeight(null)) {
-                player.setDy(0);
-                player.setYForced(player.getY() < offsetY ? offsetY : offsetY + display.getHeight(null) - player.getImage().getHeight(null));
+                player.update();
+                if (player.getX() < offsetX || player.getX() + player.getImage().getWidth(null) > offsetX + display.getWidth(null)) {
+                    player.setDx(0);
+                    player.setXForced(player.getX() < offsetX ? offsetX : offsetX + display.getWidth(null) - player.getImage().getWidth(null));
+                }
+                if (player.getY() < offsetY || player.getY() + player.getImage().getHeight(null) > offsetY + display.getHeight(null)) {
+                    player.setDy(0);
+                    player.setYForced(player.getY() < offsetY ? offsetY : offsetY + display.getHeight(null) - player.getImage().getHeight(null));
+                }
             }
             physicsManager.tick();
             for (Entity e : entities) {

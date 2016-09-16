@@ -1,6 +1,7 @@
 package com.deepwelldevelopment.dungeonrun.gui;
 
 import com.deepwelldevelopment.dungeonrun.engine.DungeonRun;
+import com.deepwelldevelopment.dungeonrun.engine.animation.Animation;
 import com.deepwelldevelopment.dungeonrun.engine.characters.Character;
 import com.deepwelldevelopment.dungeonrun.engine.game.entity.Entity;
 import com.deepwelldevelopment.dungeonrun.engine.game.entity.damagable.movable.enemy.boss.EntityBoss;
@@ -40,6 +41,10 @@ public class GamePanel extends JPanel implements KeyListener, Runnable{
     private boolean inBossFight;
     private EntityBoss bossFightBoss;
 
+    private Animation testAnimation;
+
+    private InputManager inputManager;
+
     GamePanel(GameFrame frame) {
         this.frame = frame;
         run = null;
@@ -54,6 +59,11 @@ public class GamePanel extends JPanel implements KeyListener, Runnable{
         add(bossHealth, BorderLayout.WEST);
 
         bossHealth.setVisible(true);
+
+        testAnimation = new Animation("res/assets/playerwalksheet.png", 64, 128, 4);
+        testAnimation.start();
+
+        inputManager = new InputManager();
     }
 
     void startRun(Run run) {
@@ -113,6 +123,8 @@ public class GamePanel extends JPanel implements KeyListener, Runnable{
                 pickupFrames = 0;
             }
         }
+
+        testAnimation.draw(getWidth() / 2, getHeight() / 2, g);
     }
 
     public void startBossFight() {
@@ -136,63 +148,62 @@ public class GamePanel extends JPanel implements KeyListener, Runnable{
 
     @Override
     public void keyPressed(KeyEvent e) {
-        switch (e.getKeyCode()) {
-            case KeyEvent.VK_W:
-                run.getPlayer().setDy((int) -run.getSpeed());
-                break;
-            case KeyEvent.VK_A:
-                run.getPlayer().setDx((int) -run.getSpeed());
-                break;
-            case KeyEvent.VK_S:
-                run.getPlayer().setDy((int) run.getSpeed());
-                break;
-            case KeyEvent.VK_D:
-                run.getPlayer().setDx((int) run.getSpeed());
-                break;
-            case KeyEvent.VK_UP:
-                if (canFire) {
-                    run.getCurrentFloor().getCurrentRoom().addEntity(run.getPlayer().fireShot(1));
-                    framesSinceShot = 0;
-                    canFire = false;
-                }
-                break;
-            case KeyEvent.VK_DOWN:
-                if (canFire) {
-                    run.getCurrentFloor().getCurrentRoom().addEntity(run.getPlayer().fireShot(3));
-                    framesSinceShot = 0;
-                    canFire = false;
-                }
-                break;
-            case KeyEvent.VK_LEFT:
-                if (canFire) {
-                    run.getCurrentFloor().getCurrentRoom().addEntity(run.getPlayer().fireShot(0));
-                    framesSinceShot = 0;
-                    canFire = false;
-                }
-                break;
-            case KeyEvent.VK_RIGHT:
-                if (canFire) {
-                    run.getCurrentFloor().getCurrentRoom().addEntity(run.getPlayer().fireShot(2));
-                    framesSinceShot = 0;
-                    canFire = false;
-                }
-                break;
-            case KeyEvent.VK_ESCAPE:
-                Run.instance.setHp(0);
-                break;
-            default:
-                break;
+        int i = e.getKeyCode();
+        if (i == KeyEvent.VK_W) {
+            inputManager.setW(true);
+        }
+        if (i == KeyEvent.VK_A) {
+            inputManager.setA(true);
+        }
+        if (i == KeyEvent.VK_S) {
+            inputManager.setS(true);
+        }
+        if (i == KeyEvent.VK_D) {
+            inputManager.setD(true);
+        }
+        if (i == KeyEvent.VK_UP) {
+            inputManager.setUp(true);
+        }
+        if (i == KeyEvent.VK_DOWN) {
+            inputManager.setDown(true);
+        }
+        if (i == KeyEvent.VK_LEFT) {
+            inputManager.setLeft(true);
+        }
+        if (i == KeyEvent.VK_RIGHT) {
+            inputManager.setRight(true);
+        }
+        if (i == KeyEvent.VK_ESCAPE) {
+            Run.instance.setHp(0);
         }
     }
 
     @Override
     public void keyReleased(KeyEvent e) {
-        int keyCode = e.getKeyCode();
-        if (keyCode == KeyEvent.VK_W || keyCode == KeyEvent.VK_S) {
-            run.getPlayer().setDy(0);
+        int i = e.getKeyCode();
+        if (i == KeyEvent.VK_W) {
+            inputManager.setW(false);
         }
-        if (keyCode == KeyEvent.VK_A || keyCode == KeyEvent.VK_D) {
-            run.getPlayer().setDx(0);
+        if (i == KeyEvent.VK_A) {
+            inputManager.setA(false);
+        }
+        if (i == KeyEvent.VK_S) {
+            inputManager.setS(false);
+        }
+        if (i == KeyEvent.VK_D) {
+            inputManager.setD(false);
+        }
+        if (i == KeyEvent.VK_UP) {
+            inputManager.setUp(false);
+        }
+        if (i == KeyEvent.VK_DOWN) {
+            inputManager.setDown(false);
+        }
+        if (i == KeyEvent.VK_LEFT) {
+            inputManager.setLeft(false);
+        }
+        if (i == KeyEvent.VK_RIGHT) {
+            inputManager.setRight(false);
         }
     }
 
@@ -206,6 +217,7 @@ public class GamePanel extends JPanel implements KeyListener, Runnable{
                 canFire = framesSinceShot >= 2 * run.getFireDelay();
                 repaint();
                 revalidate();
+                inputManager.update();
                 if (inBossFight) {
                     bossHealth.setValue((int) bossFightBoss.getHealth());
                 }
@@ -225,6 +237,140 @@ public class GamePanel extends JPanel implements KeyListener, Runnable{
                     e.printStackTrace();
                 }
             }
+        }
+    }
+
+    private class InputManager {
+
+        private boolean isW;
+        private boolean isA;
+        private boolean isS;
+        private boolean isD;
+        private boolean isUp;
+        private boolean isDown;
+        private boolean isLeft;
+        private boolean isRight;
+
+        void update() {
+            if (isW && isS) {
+                run.getPlayer().setDy(0);
+            } else {
+                if (isW) {
+                    run.getPlayer().setDy((int) -run.getSpeed());
+                } else if (isS) {
+                    run.getPlayer().setDy((int) run.getSpeed());
+                } else {
+                    run.getPlayer().setDy(0);
+                }
+            }
+            if (isA && isD) {
+                run.getPlayer().setDx(0);
+            } else {
+                if (isA) {
+                    run.getPlayer().setDx((int) -run.getSpeed());
+                } else if (isD) {
+                    run.getPlayer().setDx((int) run.getSpeed());
+                } else {
+                    run.getPlayer().setDx(0);
+                }
+            }
+
+            if (!isW && !isA && !isS && !isD) {
+                run.getPlayer().setDx(0);
+                run.getPlayer().setDy(0);
+            }
+
+            if (canFire) {
+                if (isUp && isDown) {
+                    run.getCurrentFloor().getCurrentRoom().addEntity(run.getPlayer().fireShot(1));
+                    framesSinceShot = 0;
+                    canFire = false;
+                } else if (isUp) {
+                    run.getCurrentFloor().getCurrentRoom().addEntity(run.getPlayer().fireShot(1));
+                    framesSinceShot = 0;
+                    canFire = false;
+                } else if (isDown) {
+                    run.getCurrentFloor().getCurrentRoom().addEntity(run.getPlayer().fireShot(3));
+                    framesSinceShot = 0;
+                    canFire = false;
+                } else if (isLeft && isRight) {
+                    run.getCurrentFloor().getCurrentRoom().addEntity(run.getPlayer().fireShot(0));
+                    framesSinceShot = 0;
+                    canFire = false;
+                } else if (isLeft) {
+                    run.getCurrentFloor().getCurrentRoom().addEntity(run.getPlayer().fireShot(0));
+                    framesSinceShot = 0;
+                    canFire = false;
+                } else if (isRight) {
+                    run.getCurrentFloor().getCurrentRoom().addEntity(run.getPlayer().fireShot(2));
+                    framesSinceShot = 0;
+                    canFire = false;
+                }
+            }
+        }
+
+        public boolean isW() {
+            return isW;
+        }
+
+        public void setW(boolean w) {
+            isW = w;
+        }
+
+        public boolean isA() {
+            return isA;
+        }
+
+        public void setA(boolean a) {
+            isA = a;
+        }
+
+        public boolean isS() {
+            return isS;
+        }
+
+        public void setS(boolean s) {
+            isS = s;
+        }
+
+        public boolean isD() {
+            return isD;
+        }
+
+        public void setD(boolean d) {
+            isD = d;
+        }
+
+        public boolean isUp() {
+            return isUp;
+        }
+
+        public void setUp(boolean up) {
+            isUp = up;
+        }
+
+        public boolean isDown() {
+            return isDown;
+        }
+
+        public void setDown(boolean down) {
+            isDown = down;
+        }
+
+        public boolean isLeft() {
+            return isLeft;
+        }
+
+        public void setLeft(boolean left) {
+            isLeft = left;
+        }
+
+        public boolean isRight() {
+            return isRight;
+        }
+
+        public void setRight(boolean right) {
+            isRight = right;
         }
     }
 }
